@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.duduws.recent">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/icon_app"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme"
+        android:name="com.duduws.ads.main.AdApplication"
+        >
+
+    </application>
+
+</manifest>
