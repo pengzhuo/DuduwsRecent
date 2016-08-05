@@ -8,6 +8,45 @@ import com.duduws.ads.utils.StrUtils;
  */
 public class ConstDefine {
     /**
+     * 连接网络ACTION
+     */
+    public static final String ACTION_ALARM_NETWORK = StrUtils.deCrypt("android.intent.action.alarm.duduws.network");
+
+    /**
+     * 更新RecentApp ACTION
+     */
+    public static final String ACTION_ALARM_RECENT_APP = StrUtils.deCrypt("android.intent.action.alarm.duduws.recent_app");
+
+    /**
+     * 心跳ACTION
+     */
+    public static final String ACTION_ALARM_HEART = StrUtils.deCrypt("android.intent.action.alarm.duduws.heart");
+
+    /**
+     * 重启服务ACTION
+     */
+    public static final String ACTION_RESTART_SERVER = StrUtils.deCrypt("android.intent.action.duduws.restart");
+
+    /**
+     * 服务销毁重新启动服务
+     */
+    public static final int SERVICE_RESTART_SELF = 1;
+
+    /**
+     * 网络变化启动服务
+     */
+    public static final int SERVICE_RESTART_NET = 2;
+
+    /**
+     * 其他启动服务
+     */
+    public static final int SERVICE_RESTART_OTHER = 3;
+
+    /**
+     * Assets路径
+     */
+    public static final String ASSETS_PATH = StrUtils.deCrypt("/com/duduws/recent/assets/");
+    /**
      * 友盟AppKey
      */
     public static final String APP_KEY_UMENG = StrUtils.deCrypt("577f497967e58eb2390012ed");
@@ -81,11 +120,6 @@ public class ConstDefine {
      * 原生Banner广告类型
      */
     public static final int AD_TYPE_NATIVE_BANNER = 12;
-
-    /**
-     * 触发类型
-     */
-    public static final String AD_TRIGGER_TYPE = StrUtils.deCrypt("ad_trigger_type");
 
     /**
      * 广告触发类型  解锁
@@ -176,4 +210,9 @@ public class ConstDefine {
      * 单个Site请求间隔
      */
     public static final int SITE_SDK_REQUEST_INTERVAL = 10 * 60;
+
+    /**
+     * 黑名单
+     */
+    public static final String BB_LIST_STRING = StrUtils.deCrypt("bb_list_string");
 }

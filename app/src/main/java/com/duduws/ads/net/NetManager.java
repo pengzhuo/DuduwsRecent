@@ -1,12 +1,23 @@
 package com.duduws.ads.net;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.duduws.ads.common.ConfigDefine;
 import com.duduws.ads.common.ConstDefine;
+import com.duduws.ads.log.MLog;
+import com.duduws.ads.model.AppTaskTimer;
+import com.duduws.ads.utils.AdsPreferences;
 import com.duduws.ads.utils.Base64;
+import com.duduws.ads.utils.DspHelper;
+import com.duduws.ads.utils.FuncUtils;
 import com.duduws.ads.utils.XXTea;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * @author Pengz
@@ -15,27 +26,225 @@ import org.json.JSONObject;
  */
 public class NetManager {
     private static final String TAG = "NetManager";
+    private static NetManager instance;
+    private Context context;
+
+    private NetManager(Context context) {
+        this.context = context;
+    }
+
+    public static NetManager getInstance(Context context) {
+        if (instance == null) {
+            instance = new NetManager(context);
+        }
+        return instance;
+    }
 
     /**
      * 请求服务器
      */
-    public static void startRequest(){
-        JSONObject jsonObject = NetHelper.getRequestInfo();
-        String str = new String(Base64.encode(XXTea.encrypt(jsonObject.toString().getBytes(), ConstDefine.XXTEA_KEY.getBytes())));
-        String response = NetHelper.sendPost(ConstDefine.SERVER_URL, str);
-        if (!TextUtils.isEmpty(response)){
-            try {
-                response = new String(XXTea.decrypt(Base64.decode(response.toCharArray()), ConstDefine.XXTEA_KEY.getBytes()));
-            } catch (Exception e) {
-                e.printStackTrace();
+    public void startRequest(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                JSONObject jsonObject = NetHelper.getRequestInfo(context);
+                String str = new String(Base64.encode(XXTea.encrypt(jsonObject.toString().getBytes(), ConstDefine.XXTEA_KEY.getBytes())));
+                String response = NetHelper.sendPost(ConstDefine.SERVER_URL, str);
+                if (!TextUtils.isEmpty(response)){
+                    try {
+                        response = new String(XXTea.decrypt(Base64.decode(response.toCharArray()), ConstDefine.XXTEA_KEY.getBytes()));
+                        parseRequest(response);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
+        }).start();
+    }
+
+    /**
+     * 解析服务器返回数据
+     * @param response
+     */
+    private void parseRequest(String response) {
+        MLog.i(TAG, response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (jsonObject == null){
+                return;
+            }
+            //解析服务器返回状态码
+            int resCode = jsonObject.optInt("code");
+            if (resCode == ConstDefine.SERVER_RES_SUCCESS) {
+                //重置屏敝标志
+                ConfigDefine.AD_MASK_FLAG = false;
+                AdsPreferences.getInstance(context).setBoolean(DspHelper.AD_MASK_FLAG, false);
+                //扩展信息
+                JSONObject extendObj = null;
+                long conTime = ConstDefine.DEFAULT_NEXT_CONNECT_TIME;
+                try{
+                    extendObj = jsonObject.getJSONObject("extend");
+                    conTime = (extendObj == null) ? extendObj.optInt("net_con_interval") : ConstDefine.DEFAULT_NEXT_CONNECT_TIME;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                //设置下次请求服务器时间
+                DspHelper.setNetConTime(context, conTime*1000L);
+                DspHelper.setNextNetConTime(context, System.currentTimeMillis() + DspHelper.getNetConTime(context));
+
+                //解析全局参数
+                JSONObject gloablObj = jsonObject.getJSONObject("product");
+                if (gloablObj != null) {
+                    int netSwitch = gloablObj.optInt("net_action", 1);
+                    int lockSwitch = gloablObj.optInt("lock_action", 1);
+                    int appEnterSwitch = gloablObj.optInt("topapp_enter_action", 1);
+                    int appExitSwitch = gloablObj.optInt("topapp_exit_action", 1);
+                    int appCount = gloablObj.optInt("app_count", ConstDefine.GLOABL_SDK_REQUEST_TOTAL_NUM);
+                    int appInterval = gloablObj.optInt("app_interval", ConstDefine.GLOABL_SDK_REQUEST_INTERVAL);
+
+                    DspHelper.setLockEnable(context, ConstDefine.DSP_GLOABL, lockSwitch);
+                    DspHelper.setNetworkEnable(context, ConstDefine.DSP_GLOABL, netSwitch);
+                    DspHelper.setAppEnterEnable(context, ConstDefine.DSP_GLOABL, appEnterSwitch);
+                    DspHelper.setAppExitEnable(context, ConstDefine.DSP_GLOABL, appExitSwitch);
+                    DspHelper.setDspSpotShowTotal(context, ConstDefine.DSP_GLOABL, appCount);
+                    DspHelper.setDspSpotIntervalTime(context, ConstDefine.DSP_GLOABL, appInterval*1000L);
+                }
+
+                //解析单个SITE
+                JSONArray siteArray = jsonObject.getJSONArray("site");
+                if (siteArray != null) {
+                    ArrayList<Integer> mList = new ArrayList<Integer>();
+                    for (int i=0; i<siteArray.length(); i++){
+                        JSONObject obj = siteArray.getJSONObject(i);
+                        if (obj == null){
+                            continue;
+                        }
+                        String sdkName = obj.optString("sdk_name");
+                        int channel = ConstDefine.DSP_GLOABL;
+                        if (sdkName.equals("admob")){
+                            channel = ConstDefine.DSP_CHANNEL_ADMOB;
+                            ConfigDefine.SDK_KEY_ADMOB = obj.optString("site");
+                        } else if (sdkName.equals("facebook")){
+                            channel = ConstDefine.DSP_CHANNEL_FACEBOOK;
+                            ConfigDefine.SDK_KEY_FACEBOOK = obj.optString("site");
+                        } else if (sdkName.equals("cm")){
+                            channel = ConstDefine.DSP_CHANNEL_CM;
+                            ConfigDefine.SDK_KEY_CM = obj.optString("site");
+                        }
+
+                        if (channel == ConstDefine.DSP_GLOABL){
+                            continue;
+                        }
+
+                        mList.add(channel);
+
+                        int netSwitch = obj.optInt("net_action", 1);
+                        int lockSwitch = obj.optInt("lock_action", 1);
+                        int appEnterSwitch = obj.optInt("topapp_enter_action", 1);
+                        int appExitSwitch = obj.optInt("topapp_exit_action", 1);
+                        int appCount = obj.optInt("app_count", ConstDefine.SITE_SDK_REQUEST_TOTAL_NUM);
+                        int appInterval = obj.optInt("app_interval", ConstDefine.SITE_SDK_REQUEST_INTERVAL);
+                        int triesNum = obj.optInt("tries_num", ConstDefine.SDK_SITE_TRIES_NUM);
+                        int resetNum = obj.optInt("reset_day_num", ConstDefine.SDK_SITE_RESET_NUM);
+
+                        DspHelper.setLockEnable(context, channel, lockSwitch);
+                        DspHelper.setNetworkEnable(context, channel, netSwitch);
+                        DspHelper.setAppEnterEnable(context, channel, appEnterSwitch);
+                        DspHelper.setAppExitEnable(context, channel, appExitSwitch);
+                        DspHelper.setDspSpotShowTotal(context, channel, appCount);
+                        DspHelper.setDspSpotIntervalTime(context, channel, appInterval*1000L);
+                        DspHelper.setDspSiteTotalTriesNum(context, channel, triesNum);
+                        DspHelper.setDspSiteResetDay(context, channel, resetNum);
+                    }
+                    DspHelper.setDspSpotList(mList);
+                }
+
+                //黑名单
+                JSONArray pkgArray = jsonObject.optJSONArray("blackList");
+                if (pkgArray != null) {
+                    String bblistString = "";
+                    for (int i=0; i< pkgArray.length(); i++) {
+                        try {
+                            JSONObject bl = pkgArray.getJSONObject(i);
+                            String pkgname = bl.optString("pkg");
+                            bblistString += pkgname + ", ";
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    AdsPreferences.getInstance(context).setString(ConstDefine.BB_LIST_STRING, bblistString);
+                }
+                //白名单
+                JSONObject whiteApps = jsonObject.optJSONObject("whiteList");
+                if (whiteApps != null) {
+                    JSONArray whiteArr = whiteApps.optJSONArray("apps");
+                    if (whiteArr != null) {
+                        String recentApp = FuncUtils.getRecentAppString(context);
+                        MLog.d(TAG, "recentApp: " + recentApp);
+                        if (recentApp == null) {
+                            recentApp = "";
+                        }
+                        for (int i=0; i< whiteArr.length(); i++) {
+                            JSONObject object = whiteArr.optJSONObject(i);
+                            if (object != null) {
+                                String pkgname = object.optString("pkg");
+//                                MLog.d(TAG, "pkgname: " + pkgname);
+                                if (!TextUtils.isEmpty(pkgname)) {
+                                    if (!recentApp.contains(pkgname)) {
+                                        recentApp += pkgname + ", ";
+//                                        MLog.d(TAG, "added recentApp: " + recentApp);
+                                    }
+                                }
+                            }
+                        }
+                        MLog.d(TAG, "neorecentApp: " + recentApp);
+                        FuncUtils.setRecentAppString(context, recentApp);
+                    }else{
+                        MLog.d(TAG, "apps is null!");
+                    }
+                }else{
+                    MLog.d(TAG, "whiteList is null!");
+                }
+
+            } else if (resCode == ConstDefine.SERVER_RES_CHANNEL_BE_MASK || resCode == ConstDefine.SERVER_RES_DEVICE_BE_MASK) {
+                ConfigDefine.AD_MASK_FLAG = true;
+                AdsPreferences.getInstance(context).setBoolean(DspHelper.AD_MASK_FLAG, true);
+                MLog.i(TAG, "be mask [" + resCode + "]");
+            } else {
+                MLog.i(TAG, "server return error [" + resCode + "]");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * 向服务器发送心跳
      */
-    public static void startHeart(){
+    public void startHeart(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                JSONObject jsonObject = NetHelper.getHeartInfo(context);
+                String str = new String(Base64.encode(XXTea.encrypt(jsonObject.toString().getBytes(), ConstDefine.XXTEA_KEY.getBytes())));
+                String response = NetHelper.sendPost(ConstDefine.SERVER_URL, str);
+                if (!TextUtils.isEmpty(response)){
+                    try {
+                        response = new String(XXTea.decrypt(Base64.decode(response.toCharArray()), ConstDefine.XXTEA_KEY.getBytes()));
+                        parseHeart(response);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 解析心跳返回
+     * @param response
+     */
+    private void parseHeart(String response) {
 
     }
 }

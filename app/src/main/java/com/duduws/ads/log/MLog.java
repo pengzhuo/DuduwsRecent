@@ -18,9 +18,9 @@ public class MLog {
     public static void i(String tag, String msg){
         if (isLogEnable){
             if (TextUtils.isEmpty(tag)){
-                Log.i(TAG, msg);
+                Log.i(TAG, "#### " + msg);
             }else{
-                Log.i(tag, msg);
+                Log.i(tag, "#### " + msg);
             }
         }
     }
@@ -32,9 +32,9 @@ public class MLog {
     public static void d(String tag, String msg){
         if (isLogEnable){
             if (TextUtils.isEmpty(tag)){
-                Log.d(TAG, msg);
+                Log.d(TAG, "#### " + msg);
             }else{
-                Log.d(tag, msg);
+                Log.d(tag, "#### " + msg);
             }
         }
     }
@@ -46,9 +46,9 @@ public class MLog {
     public static void w(String tag, String msg){
         if (isLogEnable){
             if (TextUtils.isEmpty(tag)){
-                Log.w(TAG, msg);
+                Log.w(TAG, "#### " + msg);
             }else{
-                Log.w(tag, msg);
+                Log.w(tag, "#### " + msg);
             }
         }
     }
@@ -60,9 +60,9 @@ public class MLog {
     public static void e(String tag, String msg){
         if (isLogEnable){
             if (TextUtils.isEmpty(tag)){
-                Log.e(TAG, msg);
+                Log.e(TAG, "#### " + msg);
             }else{
-                Log.e(tag, msg);
+                Log.e(tag, "#### " + msg);
             }
         }
     }

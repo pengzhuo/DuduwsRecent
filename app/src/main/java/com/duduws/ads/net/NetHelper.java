@@ -1,5 +1,13 @@
 package com.duduws.ads.net;
 
+import android.content.Context;
+import android.os.Build;
+
+import com.duduws.ads.common.ConfigDefine;
+import com.duduws.ads.common.ConstDefine;
+import com.duduws.ads.log.MLog;
+import com.duduws.ads.utils.FuncUtils;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -9,6 +17,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -19,13 +28,25 @@ import java.util.Map;
 public class NetHelper {
     private static final String TAG = "NetHelper";
 
-    public static JSONObject getRequestInfo(){
+    public static JSONObject getRequestInfo(Context context){
         JSONObject jsonObj = new JSONObject();
-
+        //拼装基本信息
+        try{
+            JSONObject baseInfo = new JSONObject();
+            baseInfo.put("imei", FuncUtils.getIMEI(context));
+            baseInfo.put("cid", ConfigDefine.APP_CHANNEL_ID);
+            baseInfo.put("version", ConfigDefine.APP_VERSION);
+            baseInfo.put("model", Build.MODEL);
+            baseInfo.put("pid", ConfigDefine.APP_PRODUCT_ID);
+            baseInfo.put("area", Locale.getDefault().getCountry());
+            jsonObj.put("base", baseInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return jsonObj;
     }
 
-    public static JSONObject getHeartInfo(){
+    public static JSONObject getHeartInfo(Context context){
         JSONObject jsonObj = new JSONObject();
 
         return jsonObj;
@@ -47,10 +68,10 @@ public class NetHelper {
             // 打开和URL之间的连接
             URLConnection connection = realUrl.openConnection();
             // 设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent",
-                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+//            connection.setRequestProperty("accept", "*/*");
+//            connection.setRequestProperty("connection", "Keep-Alive");
+//            connection.setRequestProperty("user-agent",
+//                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
             // 建立实际的连接
             connection.connect();
             // 获取所有响应头字段
@@ -91,6 +112,9 @@ public class NetHelper {
      * @return 所代表远程资源的响应结果
      */
     public static String sendPost(String url, String param) {
+//        MLog.i(TAG, "sendPost url: " + url);
+//        MLog.i(TAG, "sendPost param: " + param);
+
         PrintWriter out = null;
         BufferedReader in = null;
         String result = "";
@@ -98,12 +122,13 @@ public class NetHelper {
             URL realUrl = new URL(url);
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
+            conn.setConnectTimeout(ConstDefine.NET_SOCKET_TIMEOUT);
             // 设置通用的请求属性
-            conn.setRequestProperty("accept", "*/*");
-            conn.setRequestProperty("connection", "Keep-Alive");
-            conn.setRequestProperty("user-agent",
-                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-            conn.setRequestProperty("compGZ", "true");
+//            conn.setRequestProperty("accept", "*/*");
+//            conn.setRequestProperty("connection", "Keep-Alive");
+//            conn.setRequestProperty("user-agent",
+//                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+//            conn.setRequestProperty("compGZ", "true");
             // 发送POST请求必须设置如下两行
             conn.setDoOutput(true);
             conn.setDoInput(true);
@@ -121,7 +146,7 @@ public class NetHelper {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送 POST 请求出现异常！"+e);
+            MLog.e(TAG, "send post error " + e.toString());
             e.printStackTrace();
         }
         //使用finally块来关闭输出流、输入流
