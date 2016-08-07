@@ -99,7 +99,12 @@ public class AppTaskTimer {
                             if (channel != ConstDefine.DSP_GLOABL){
                                 if (FuncUtils.hasActiveNetwork(mContext)){
                                     //展示广告
-                                    DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_ENTER);
+                                    try {
+                                        Thread.sleep(5000);
+                                        DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_ENTER);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
