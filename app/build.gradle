@@ -19,62 +19,62 @@ android {
     productFlavors {
         ct01 {
             manifestPlaceholders = [
-                    APP_VERSION : properties.getProperty("version_ct01"),
-                    APP_CHANNEL_ID : properties.getProperty("channel_ct01"),
-                    APP_COOPERATION_ID : properties.getProperty("work_ct01"),
-                    APP_PRODUCT_ID : properties.getProperty("product_ct01"),
-                    APP_PROTOCOL : properties.getProperty("protocol_ct01"),
-                    SDK_KEY_FACEBOOK : properties.getProperty("key_fb_ct01"),
-                    SDK_KEY_CM : properties.getProperty("key_cm_ct01"),
-                    SDK_KEY_ADMOB : properties.getProperty("key_admob_ct01")
+                    APP_VERSION       : properties.getProperty("version_ct01"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_ct01"),
+                    APP_COOPERATION_ID: properties.getProperty("work_ct01"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_ct01"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_ct01"),
+                    SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_ct01"),
+                    SDK_KEY_CM        : properties.getProperty("key_cm_ct01"),
+                    SDK_KEY_ADMOB     : properties.getProperty("key_admob_ct01")
             ]
         }
         c002 {
             manifestPlaceholders = [
-                    APP_VERSION : properties.getProperty("version_c002"),
-                    APP_CHANNEL_ID : properties.getProperty("channel_c002"),
-                    APP_COOPERATION_ID : properties.getProperty("work_c002"),
-                    APP_PRODUCT_ID : properties.getProperty("product_c002"),
-                    APP_PROTOCOL : properties.getProperty("protocol_c002"),
-                    SDK_KEY_FACEBOOK : properties.getProperty("key_fb_c002"),
-                    SDK_KEY_CM : properties.getProperty("key_cm_c002"),
-                    SDK_KEY_ADMOB : properties.getProperty("key_admob_c002")
+                    APP_VERSION       : properties.getProperty("version_c002"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_c002"),
+                    APP_COOPERATION_ID: properties.getProperty("work_c002"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_c002"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_c002"),
+                    SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_c002"),
+                    SDK_KEY_CM        : properties.getProperty("key_cm_c002"),
+                    SDK_KEY_ADMOB     : properties.getProperty("key_admob_c002")
             ]
         }
         c101 {
             manifestPlaceholders = [
-                    APP_VERSION : properties.getProperty("version_c101"),
-                    APP_CHANNEL_ID : properties.getProperty("channel_c101"),
-                    APP_COOPERATION_ID : properties.getProperty("work_c101"),
-                    APP_PRODUCT_ID : properties.getProperty("product_c101"),
-                    APP_PROTOCOL : properties.getProperty("protocol_c101"),
-                    SDK_KEY_FACEBOOK : properties.getProperty("key_fb_c101"),
-                    SDK_KEY_CM : properties.getProperty("key_cm_c101"),
-                    SDK_KEY_ADMOB : properties.getProperty("key_admob_c101")
+                    APP_VERSION       : properties.getProperty("version_c101"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_c101"),
+                    APP_COOPERATION_ID: properties.getProperty("work_c101"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_c101"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_c101"),
+                    SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_c101"),
+                    SDK_KEY_CM        : properties.getProperty("key_cm_c101"),
+                    SDK_KEY_ADMOB     : properties.getProperty("key_admob_c101")
             ]
         }
         c102 {
             manifestPlaceholders = [
-                    APP_VERSION : properties.getProperty("version_c102"),
-                    APP_CHANNEL_ID : properties.getProperty("channel_c102"),
-                    APP_COOPERATION_ID : properties.getProperty("work_c102"),
-                    APP_PRODUCT_ID : properties.getProperty("product_c102"),
-                    APP_PROTOCOL : properties.getProperty("protocol_c102"),
-                    SDK_KEY_FACEBOOK : properties.getProperty("key_fb_c102"),
-                    SDK_KEY_CM : properties.getProperty("key_cm_c102"),
-                    SDK_KEY_ADMOB : properties.getProperty("key_admob_c102")
+                    APP_VERSION       : properties.getProperty("version_c102"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_c102"),
+                    APP_COOPERATION_ID: properties.getProperty("work_c102"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_c102"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_c102"),
+                    SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_c102"),
+                    SDK_KEY_CM        : properties.getProperty("key_cm_c102"),
+                    SDK_KEY_ADMOB     : properties.getProperty("key_admob_c102")
             ]
         }
         c103 {
             manifestPlaceholders = [
-                    APP_VERSION : properties.getProperty("version_c103"),
-                    APP_CHANNEL_ID : properties.getProperty("channel_c103"),
-                    APP_COOPERATION_ID : properties.getProperty("work_c103"),
-                    APP_PRODUCT_ID : properties.getProperty("product_c103"),
-                    APP_PROTOCOL : properties.getProperty("protocol_c103"),
-                    SDK_KEY_FACEBOOK : properties.getProperty("key_fb_c103"),
-                    SDK_KEY_CM : properties.getProperty("key_cm_c103"),
-                    SDK_KEY_ADMOB : properties.getProperty("key_admob_c103")
+                    APP_VERSION       : properties.getProperty("version_c103"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_c103"),
+                    APP_COOPERATION_ID: properties.getProperty("work_c103"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_c103"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_c103"),
+                    SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_c103"),
+                    SDK_KEY_CM        : properties.getProperty("key_cm_c103"),
+                    SDK_KEY_ADMOB     : properties.getProperty("key_admob_c103")
             ]
         }
     }
@@ -110,7 +110,7 @@ dependencies {
     compile(name: 'AudienceNetwork', ext: 'aar')
     compile(name: 'cmadsdk_world_base_V3.4.7', ext: 'aar')
     compile(name: 'android-processes-1.0.8', ext: 'aar')
+    compile files('libs/volley.jar')
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.google.android.gms:play-services-ads:9.2.1'
-    compile files('libs/volley.jar')
 }

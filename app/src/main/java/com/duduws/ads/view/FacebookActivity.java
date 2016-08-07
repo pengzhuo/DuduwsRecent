@@ -34,10 +34,11 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
         }
 
         //初始化Facebook
-//        FacebookSdk.sdkInitialize(getApplicationContext());
-//        loadInterstitialAd(getApplicationContext(), ConfigDefine.SDK_KEY_FACEBOOK);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        loadInterstitialAd(getApplicationContext(), ConfigDefine.SDK_KEY_FACEBOOK);
 
-        Toast.makeText(this, ConfigDefine.SDK_KEY_FACEBOOK, Toast.LENGTH_LONG).show();
+        finish();
+//        Toast.makeText(this, ConfigDefine.SDK_KEY_FACEBOOK, Toast.LENGTH_LONG).show();
     }
 
     private void loadInterstitialAd(Context context, String id){
@@ -45,13 +46,14 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
         interstitialAd = new InterstitialAd(context, id);
         interstitialAd.setAdListener(this);
         interstitialAd.loadAd();
+        DspHelper.updateRequestData(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_REQUEST);
     }
 
     @Override
     public void onInterstitialDisplayed(Ad ad) {
         MLog.i(TAG, "onInterstitialDisplayed " + ad.toString());
-        DspHelper.updateShowData(this);
+        DspHelper.updateShowData(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SHOW);
     }
 
@@ -64,9 +66,9 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
     @Override
     public void onError(Ad ad, AdError adError) {
         MLog.i(TAG, "onError " + ad.toString() + " error: " + adError.getErrorCode() + " , " + adError.getErrorMessage());
-        DspHelper.updateRequestData(this);
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_FAIL);
-        int triesNum = DspHelper.getDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+        int triesNum = DspHelper.getDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK) + 1;
+        DspHelper.setDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triesNum);
         int totalNum = DspHelper.getDspSiteTotalTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
         if (triesNum >= totalNum){
             DspHelper.setDspSiteTriesFlag(this, ConstDefine.DSP_CHANNEL_FACEBOOK, true);
@@ -78,7 +80,6 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
     public void onAdLoaded(Ad ad) {
         MLog.i(TAG, "onAdLoaded " + ad.toString());
         interstitialAd.show();
-        DspHelper.updateRequestData(this);
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SUCCESS);
     }
 

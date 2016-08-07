@@ -55,40 +55,52 @@ public class AppTaskTimer {
                     String bbList = AdsPreferences.getInstance(mContext).getString(ConstDefine.BB_LIST_STRING, "");
                     String packageName = FuncUtils.appInFront(mContext);
                     //包名为空或为自身，则直接返回
-                    if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(oldPackageName) || packageName.equalsIgnoreCase(mContext.getPackageName())){
-                        return;
+                    if (oldPackageName != null){
+//                        MLog.e(TAG, packageName + ", " + oldPackageName + ", " + mContext.getPackageName());
                     }
-                    boolean flag = false;
-                    if (oldPackageName != null && !TextUtils.equals(oldPackageName, packageName) && !FuncUtils.isSystemApp(mContext, oldPackageName) && !bbList.contains(oldPackageName)){
-                        //检测应用退出
-                        long time = DspHelper.getDspSpotLastTime(mContext);
-                        if (!DateUtils.isToday(time)){
-                            //重置数据
-                            DspHelper.resetData(mContext);
-                        }
+                    if (TextUtils.isEmpty(oldPackageName) ||
+                            TextUtils.isEmpty(packageName) ||
+                            TextUtils.equals(oldPackageName, packageName)){
+//                        MLog.e(TAG, "startAppCheck fail !");
+                    }else{
+                        boolean flag = false;
+                        if (!TextUtils.isEmpty(oldPackageName) &&
+                                !FuncUtils.isSystemApp(mContext, oldPackageName) &&
+                                !bbList.contains(oldPackageName) &&
+                                !oldPackageName.equalsIgnoreCase(mContext.getPackageName())){
+                            //检测应用退出
+                            long time = DspHelper.getDspSpotLastTime(mContext);
+                            if (!DateUtils.isToday(time)){
+                                //重置数据
+                                DspHelper.resetData(mContext);
+                            }
 
-                        int channel = DspHelper.getDspSpotAppExitChannel(mContext);
-                        if (channel != ConstDefine.DSP_GLOABL){
-                            flag = true;
-                            if (FuncUtils.hasActiveNetwork(mContext)){
-                                //展示广告
-                                DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_EXIT);
+                            int channel = DspHelper.getDspSpotAppExitChannel(mContext);
+                            if (channel != ConstDefine.DSP_GLOABL){
+                                flag = true;
+                                if (FuncUtils.hasActiveNetwork(mContext)){
+                                    //展示广告
+                                    DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_EXIT);
+                                }
                             }
                         }
-                    }
-                    if (!flag && !TextUtils.equals(oldPackageName, packageName) && !FuncUtils.isSystemApp(mContext, packageName) && !bbList.contains(packageName)){
-                        //检测应用进入
-                        long time = DspHelper.getDspSpotLastTime(mContext);
-                        if (!DateUtils.isToday(time)){
-                            //重置数据
-                            DspHelper.resetData(mContext);
-                        }
+                        if (!flag &&
+                                !FuncUtils.isSystemApp(mContext, packageName) &&
+                                !bbList.contains(packageName) &&
+                                !packageName.equalsIgnoreCase(mContext.getPackageName())){
+                            //检测应用进入
+                            long time = DspHelper.getDspSpotLastTime(mContext);
+                            if (!DateUtils.isToday(time)){
+                                //重置数据
+                                DspHelper.resetData(mContext);
+                            }
 
-                        int channel = DspHelper.getDspSpotAppEnterChannel(mContext);
-                        if (channel != ConstDefine.DSP_GLOABL){
-                            if (FuncUtils.hasActiveNetwork(mContext)){
-                                //展示广告
-                                DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_ENTER);
+                            int channel = DspHelper.getDspSpotAppEnterChannel(mContext);
+                            if (channel != ConstDefine.DSP_GLOABL){
+                                if (FuncUtils.hasActiveNetwork(mContext)){
+                                    //展示广告
+                                    DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_ENTER);
+                                }
                             }
                         }
                     }

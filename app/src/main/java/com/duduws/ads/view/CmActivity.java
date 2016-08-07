@@ -29,21 +29,27 @@ public class CmActivity extends BaseActivity{
             triggerType = intent.getExtras().getInt(DspHelper.AD_TRIGGER_TYPE);
         }
 
-//        interstitialAdManager = new InterstitialAdManager(this, ConfigDefine.SDK_KEY_CM);
-//        interstitialAdManager.setInterstitialCallBack(callBack);
-//        interstitialAdManager.loadAd();
-//        AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_REQUEST);
+        initInterstitialAds();
 
-        Toast.makeText(this, ConfigDefine.SDK_KEY_CM, Toast.LENGTH_LONG).show();
+        finish();
+//        Toast.makeText(this, ConfigDefine.SDK_KEY_CM, Toast.LENGTH_LONG).show();
+    }
+
+    private void initInterstitialAds(){
+        interstitialAdManager = new InterstitialAdManager(this, ConfigDefine.SDK_KEY_CM);
+        interstitialAdManager.setInterstitialCallBack(callBack);
+        interstitialAdManager.loadAd();
+        DspHelper.updateRequestData(CmActivity.this, ConstDefine.DSP_CHANNEL_CM);
+        AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_REQUEST);
     }
 
     InterstitialAdCallBack callBack = new InterstitialAdCallBack() {
         @Override
         public void onAdLoadFailed(int i) {
             MLog.i(TAG, "onAdLoadFailed " + i);
-            DspHelper.updateRequestData(CmActivity.this);
             AnalyticsUtils.onEvent(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_FAIL);
-            int triesNum = DspHelper.getDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+            int triesNum = DspHelper.getDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_FACEBOOK) + 1;
+            DspHelper.setDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triesNum);
             int totalNum = DspHelper.getDspSiteTotalTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_FACEBOOK);
             if (triesNum >= totalNum){
                 DspHelper.setDspSiteTriesFlag(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, true);
@@ -55,7 +61,6 @@ public class CmActivity extends BaseActivity{
         public void onAdLoaded() {
             MLog.i(TAG, "onAdLoaded ");
             interstitialAdManager.showAd();
-            DspHelper.updateRequestData(CmActivity.this);
             AnalyticsUtils.onEvent(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SUCCESS);
         }
 
@@ -68,7 +73,7 @@ public class CmActivity extends BaseActivity{
         @Override
         public void onAdDisplayed() {
             MLog.i(TAG, "onAdDisplayed ");
-            DspHelper.updateShowData(CmActivity.this);
+            DspHelper.updateShowData(CmActivity.this, ConstDefine.DSP_CHANNEL_CM);
             AnalyticsUtils.onEvent(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SHOW);
         }
 

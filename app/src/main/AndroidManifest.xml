@@ -93,7 +93,6 @@
         <receiver
             android:name="com.duduws.ads.receive.AdReceive"
             android:enabled="true"
-            android:process="com.duduws.ads.AdReceive"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
 
             <intent-filter>

@@ -31,9 +31,10 @@ public class AdmobActivity extends BaseActivity{
             triggerType = intent.getExtras().getInt(DspHelper.AD_TRIGGER_TYPE);
         }
 
-//        initInterstitialAd();
+        initInterstitialAd();
+        finish();
 
-        Toast.makeText(this, ConfigDefine.SDK_KEY_ADMOB, Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, ConfigDefine.SDK_KEY_ADMOB, Toast.LENGTH_LONG).show();
     }
 
     private void initInterstitialAd(){
@@ -41,6 +42,7 @@ public class AdmobActivity extends BaseActivity{
         interstitialAd.setAdUnitId(ConfigDefine.SDK_KEY_ADMOB);
         interstitialAd.setAdListener(listener);
         interstitialAd.loadAd(new AdRequest.Builder().build());
+        DspHelper.updateRequestData(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_REQUEST);
     }
 
@@ -56,9 +58,9 @@ public class AdmobActivity extends BaseActivity{
         public void onAdFailedToLoad(int errorCode) {
             super.onAdFailedToLoad(errorCode);
             MLog.i(TAG, "onAdFailedToLoad " + errorCode);
-            DspHelper.updateRequestData(AdmobActivity.this);
             AnalyticsUtils.onEvent(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_FAIL);
-            int triesNum = DspHelper.getDspSiteTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
+            int triesNum = DspHelper.getDspSiteTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB) + 1;
+            DspHelper.setDspSiteTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triesNum);
             int totalNum = DspHelper.getDspSiteTotalTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
             if (triesNum >= totalNum){
                 DspHelper.setDspSiteTriesFlag(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, true);
@@ -70,7 +72,7 @@ public class AdmobActivity extends BaseActivity{
         public void onAdOpened() {
             super.onAdOpened();
             MLog.i(TAG, "onAdOpened ");
-            DspHelper.updateShowData(AdmobActivity.this);
+            DspHelper.updateShowData(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
             AnalyticsUtils.onEvent(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SHOW);
         }
 
@@ -86,7 +88,6 @@ public class AdmobActivity extends BaseActivity{
             super.onAdLoaded();
             MLog.i(TAG, "onAdLoaded ");
             interstitialAd.show();
-            DspHelper.updateRequestData(AdmobActivity.this);
             AnalyticsUtils.onEvent(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SUCCESS);
         }
     };

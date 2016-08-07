@@ -85,6 +85,15 @@ public class NetManager {
                 try{
                     extendObj = jsonObject.getJSONObject("extend");
                     conTime = (extendObj == null) ? extendObj.optInt("net_con_interval") : ConstDefine.DEFAULT_NEXT_CONNECT_TIME;
+                    JSONArray listArr = extendObj.getJSONArray("site_index");
+                    if (listArr != null){
+                        ArrayList<Integer> mList = new ArrayList<Integer>();
+                        for (int i=0; i<listArr.length(); i++){
+                            mList.add(listArr.getInt(i));
+//                            MLog.e(TAG, "@@@@@@@@@@@@@@@ " + listArr.getInt(i));
+                        }
+                        DspHelper.setDspSpotList(mList);
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -113,7 +122,6 @@ public class NetManager {
                 //解析单个SITE
                 JSONArray siteArray = jsonObject.getJSONArray("site");
                 if (siteArray != null) {
-                    ArrayList<Integer> mList = new ArrayList<Integer>();
                     for (int i=0; i<siteArray.length(); i++){
                         JSONObject obj = siteArray.getJSONObject(i);
                         if (obj == null){
@@ -136,8 +144,6 @@ public class NetManager {
                             continue;
                         }
 
-                        mList.add(channel);
-
                         int netSwitch = obj.optInt("net_action", 1);
                         int lockSwitch = obj.optInt("lock_action", 1);
                         int appEnterSwitch = obj.optInt("topapp_enter_action", 1);
@@ -156,7 +162,6 @@ public class NetManager {
                         DspHelper.setDspSiteTotalTriesNum(context, channel, triesNum);
                         DspHelper.setDspSiteResetDay(context, channel, resetNum);
                     }
-                    DspHelper.setDspSpotList(mList);
                 }
 
                 //黑名单

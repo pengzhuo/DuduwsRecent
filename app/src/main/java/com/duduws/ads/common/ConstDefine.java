@@ -54,7 +54,7 @@ public class ConstDefine {
     /**
      * 超时时间  单位：秒
      */
-    public static final int NET_SOCKET_TIMEOUT = 60;
+    public static final int NET_SOCKET_TIMEOUT = 60 * 1000;
 
     /**
      * 服务器通信密钥

@@ -166,6 +166,7 @@ public class DspHelper {
      * @param context
      */
     public static void resetData(Context context) {
+        MLog.e(TAG, "DspHelper resetData !!!!!!!!!!!!!!!!!!!!!!!!!!");
         //清除全局次数
         setDspSpotRequestNum(context, ConstDefine.DSP_GLOABL, 0);
         setDspSpotShowNum(context, ConstDefine.DSP_GLOABL, 0);
@@ -181,28 +182,22 @@ public class DspHelper {
      * 更新请求数据
      * @param context
      */
-    public static void updateRequestData(Context context) {
+    public static void updateRequestData(Context context, int channel) {
         //更新全局次数
         setDspSpotRequestNum(context, ConstDefine.DSP_GLOABL, getDspSpotRequestNum(context, ConstDefine.DSP_GLOABL)+1);
         //更新单个SITE次数
-        for (int i=0; i<DSP_SPOT_LIST.size(); i++){
-            int channel = DSP_SPOT_LIST.get(i);
-            setDspSpotRequestNum(context, channel, getDspSpotRequestNum(context, channel)+1);
-        }
+        setDspSpotRequestNum(context, channel, getDspSpotRequestNum(context, channel)+1);
     }
 
     /**
      * 更新展示数据
      * @param context
      */
-    public static void updateShowData(Context context) {
+    public static void updateShowData(Context context, int channel) {
         //更新全局次数
         setDspSpotShowNum(context, ConstDefine.DSP_GLOABL, getDspSpotShowNum(context, ConstDefine.DSP_GLOABL)+1);
         //更新单个SITE次数
-        for (int i=0; i<DSP_SPOT_LIST.size(); i++){
-            int channel = DSP_SPOT_LIST.get(i);
-            setDspSpotShowNum(context, channel, getDspSpotShowNum(context, channel)+1);
-        }
+        setDspSpotShowNum(context, channel, getDspSpotShowNum(context, channel)+1);
     }
 
     /**
@@ -216,6 +211,7 @@ public class DspHelper {
         //更新下次展示的时间
         setDspSpotNextTime(context, ConstDefine.DSP_GLOABL);
         setDspSpotNextTime(context, channel);
+        setDspSpotLastTime(context, System.currentTimeMillis());
         //打开相应渠道的广告
         Intent intent = new Intent();
         if (channel == ConstDefine.DSP_CHANNEL_ADMOB) {
@@ -238,7 +234,7 @@ public class DspHelper {
      */
     public static boolean isLockEnable(Context context, int channel) {
         boolean ret = false;
-        int value = AdsPreferences.getInstance(context).getInt(DSP_FLAG_LOCK+channel, 1);
+        int value = AdsPreferences.getInstance(context).getInt(channel, DSP_FLAG_LOCK, 1);
         if (value == 1){
             ret = true;
         }
@@ -252,7 +248,7 @@ public class DspHelper {
      * @param value
      */
     public static void setLockEnable(Context context, int channel, int value) {
-        AdsPreferences.getInstance(context).setInt(DSP_FLAG_LOCK+channel, value);
+        AdsPreferences.getInstance(context).setInt(channel, DSP_FLAG_LOCK, value);
     }
 
     /**
@@ -263,7 +259,7 @@ public class DspHelper {
      */
     public static boolean isAppEnterEnable(Context context, int channel) {
         boolean ret = false;
-        int value = AdsPreferences.getInstance(context).getInt(DSP_FLAG_ENTER+channel, 1);
+        int value = AdsPreferences.getInstance(context).getInt(channel, DSP_FLAG_ENTER, 1);
         if (value == 1){
             ret = true;
         }
@@ -277,7 +273,7 @@ public class DspHelper {
      * @param value
      */
     public static void setAppEnterEnable(Context context, int channel, int value) {
-        AdsPreferences.getInstance(context).setInt(DSP_FLAG_ENTER+channel, value);
+        AdsPreferences.getInstance(context).setInt(channel, DSP_FLAG_ENTER, value);
     }
 
     /**
@@ -288,7 +284,7 @@ public class DspHelper {
      */
     public static boolean isAppExitEnable(Context context, int channel) {
         boolean ret = false;
-        int value = AdsPreferences.getInstance(context).getInt(DSP_FLAG_EXIT+channel, 1);
+        int value = AdsPreferences.getInstance(context).getInt(channel, DSP_FLAG_EXIT, 1);
         if (value == 1){
             ret = true;
         }
@@ -302,7 +298,7 @@ public class DspHelper {
      * @param value
      */
     public static void setAppExitEnable(Context context, int channel, int value) {
-        AdsPreferences.getInstance(context).setInt(DSP_FLAG_EXIT+channel, value);
+        AdsPreferences.getInstance(context).setInt(channel, DSP_FLAG_EXIT, value);
     }
 
     /**
@@ -313,7 +309,7 @@ public class DspHelper {
      */
     public static boolean isNetworkChangeEnable(Context context, int channel) {
         boolean ret = false;
-        int value = AdsPreferences.getInstance(context).getInt(DSP_FLAG_NET+channel, 1);
+        int value = AdsPreferences.getInstance(context).getInt(channel, DSP_FLAG_NET, 1);
         if (value == 1){
             ret = true;
         }
@@ -327,7 +323,7 @@ public class DspHelper {
      * @param value
      */
     public static void setNetworkEnable(Context context, int channel, int value) {
-        AdsPreferences.getInstance(context).setInt(DSP_FLAG_NET+channel, value);
+        AdsPreferences.getInstance(context).setInt(channel, DSP_FLAG_NET, value);
     }
 
     /**
@@ -355,7 +351,7 @@ public class DspHelper {
      * @param interval
      */
     public static void setDspSpotIntervalTime(Context context, int channel, long interval) {
-        AdsPreferences.getInstance(context).setLong(DSP_SITE_SHOW_INTERVAL+channel, interval);
+        AdsPreferences.getInstance(context).setLong(channel, DSP_SITE_SHOW_INTERVAL, interval);
     }
 
     /**
@@ -369,7 +365,7 @@ public class DspHelper {
         if (channel != ConstDefine.DSP_GLOABL) {
             defValue = ConstDefine.SITE_SDK_REQUEST_INTERVAL;
         }
-        return AdsPreferences.getInstance(context).getLong(DSP_SITE_SHOW_INTERVAL+channel, defValue*1000L);
+        return AdsPreferences.getInstance(context).getLong(channel, DSP_SITE_SHOW_INTERVAL, defValue*1000L);
     }
 
     /**
@@ -381,12 +377,11 @@ public class DspHelper {
         String key = new StringBuffer().append(DSP_SITE_SHOW_NEXT_TIME)
                                         .append("_")
                                         .append(ConstDefine.AD_TYPE_SDK_SPOT)
-                                        .append("_")
-                                        .append(channel).toString();
+                                        .toString().trim();
         long interval = getDspSpotIntervalTime(context, channel);
         long curTime = System.currentTimeMillis();
         long nextTime = curTime + interval;
-        AdsPreferences.getInstance(context).setLong(key, nextTime);
+        AdsPreferences.getInstance(context).setLong(channel, key, nextTime);
     }
 
     /**
@@ -399,9 +394,8 @@ public class DspHelper {
         String key = new StringBuffer().append(DSP_SITE_SHOW_NEXT_TIME)
                                         .append("_")
                                         .append(ConstDefine.AD_TYPE_SDK_SPOT)
-                                        .append("_")
-                                        .append(channel).toString();
-        return AdsPreferences.getInstance(context).getLong(key, 0);
+                                        .toString().trim();
+        return AdsPreferences.getInstance(context).getLong(channel, key, 0);
     }
 
     /**
@@ -414,39 +408,8 @@ public class DspHelper {
         String key = new StringBuffer().append(DSP_SITE_SHOW_TOTAL)
                                         .append("_")
                                         .append(ConstDefine.AD_TYPE_SDK_SPOT)
-                                        .append("_")
-                                        .append(channel).toString();
-        AdsPreferences.getInstance(context).setInt(key, num);
-    }
-
-    /**
-     * 设置插屏展示的次数
-     * @param context
-     * @param channel
-     * @param num
-     */
-    public static void setDspSpotShowNum(Context context, int channel, int num) {
-        String key = new StringBuffer().append(DSP_SITE_SHOW_NUM)
-                                        .append("_")
-                                        .append(ConstDefine.AD_TYPE_SDK_SPOT)
-                                        .append("_")
-                                        .append(channel).toString();
-        AdsPreferences.getInstance(context).setInt(key, num);
-    }
-
-    /**
-     * 设置插屏请求的次数
-     * @param context
-     * @param channel
-     * @param num
-     */
-    public static void setDspSpotRequestNum(Context context, int channel, int num) {
-        String key = new StringBuffer().append(DSP_SITE_REQUEST_NUM)
-                                        .append("_")
-                                        .append(ConstDefine.AD_TYPE_SDK_SPOT)
-                                        .append("_")
-                                        .append(channel).toString();
-        AdsPreferences.getInstance(context).setInt(key, num);
+                                        .toString().trim();
+        AdsPreferences.getInstance(context).setInt(channel, key, num);
     }
 
     /**
@@ -463,9 +426,23 @@ public class DspHelper {
         String key = new StringBuffer().append(DSP_SITE_SHOW_TOTAL)
                                         .append("_")
                                         .append(ConstDefine.AD_TYPE_SDK_SPOT)
+                                        .toString().trim();
+        return AdsPreferences.getInstance(context).getInt(channel, key, defValue);
+    }
+
+    /**
+     * 设置插屏展示的次数
+     * @param context
+     * @param channel
+     * @param num
+     */
+    public static void setDspSpotShowNum(Context context, int channel, int num) {
+        String key = new StringBuffer().append(DSP_SITE_SHOW_NUM)
                                         .append("_")
-                                        .append(channel).toString();
-        return AdsPreferences.getInstance(context).getInt(key, defValue);
+                                        .append(ConstDefine.AD_TYPE_SDK_SPOT)
+                                        .toString().trim();
+//        MLog.i(TAG, "setDspSpotShowNum key " + key + " channel " + channel + "  num " + num);
+        AdsPreferences.getInstance(context).setInt(channel, key, num);
     }
 
     /**
@@ -478,9 +455,25 @@ public class DspHelper {
         String key = new StringBuffer().append(DSP_SITE_SHOW_NUM)
                                         .append("_")
                                         .append(ConstDefine.AD_TYPE_SDK_SPOT)
+                                        .toString().trim();
+        int num = AdsPreferences.getInstance(context).getInt(channel, key, 0);
+//        MLog.i(TAG, "getDspSpotShowNum key " + key + " channel " + channel + " num " + num);
+        return num;
+    }
+
+    /**
+     * 设置插屏请求的次数
+     * @param context
+     * @param channel
+     * @param num
+     */
+    public static void setDspSpotRequestNum(Context context, int channel, int num) {
+        String key = new StringBuffer().append(DSP_SITE_REQUEST_NUM)
                                         .append("_")
-                                        .append(channel).toString();
-        return AdsPreferences.getInstance(context).getInt(key, 0);
+                                        .append(ConstDefine.AD_TYPE_SDK_SPOT)
+                                        .toString().trim();
+//        MLog.i(TAG, "setDspSpotRequestNum key " + key + " channel " + channel + "  num " + num);
+        AdsPreferences.getInstance(context).setInt(channel, key, num);
     }
 
     /**
@@ -493,9 +486,10 @@ public class DspHelper {
         String key = new StringBuffer().append(DSP_SITE_REQUEST_NUM)
                                         .append("_")
                                         .append(ConstDefine.AD_TYPE_SDK_SPOT)
-                                        .append("_")
-                                        .append(channel).toString();
-        return AdsPreferences.getInstance(context).getInt(key, 0);
+                                        .toString().trim();
+        int num = AdsPreferences.getInstance(context).getInt(channel, key, 0);
+//        MLog.i(TAG, "getDspSpotRequestNum key " + key + " channel " + channel + " num " + num);
+        return num;
     }
 
     /**
@@ -506,9 +500,8 @@ public class DspHelper {
      */
     public static int getDspSiteResetDay(Context context, int channel) {
         String key = new StringBuffer().append(SDK_SITE_RESET_NUM)
-                                        .append("_")
-                                        .append(channel).toString();
-        return AdsPreferences.getInstance(context).getInt(key, ConstDefine.SDK_SITE_RESET_NUM);
+                                        .toString().trim();
+        return AdsPreferences.getInstance(context).getInt(channel, key, ConstDefine.SDK_SITE_RESET_NUM);
     }
 
     /**
@@ -519,9 +512,8 @@ public class DspHelper {
      */
     public static void setDspSiteResetDay(Context context, int channel, int num) {
         String key = new StringBuffer().append(SDK_SITE_RESET_NUM)
-                                        .append("_")
-                                        .append(channel).toString();
-        AdsPreferences.getInstance(context).setInt(key, num);
+                                        .toString().trim();
+        AdsPreferences.getInstance(context).setInt(channel, key, num);
     }
 
     /**
@@ -532,9 +524,8 @@ public class DspHelper {
      */
     public static int getDspSiteTriesNum(Context context, int channel) {
         String key = new StringBuffer().append(SDK_SITE_TRIES_NUM)
-                                        .append("_")
-                                        .append(channel).toString();
-        return AdsPreferences.getInstance(context).getInt(key, 0);
+                                        .toString().trim();
+        return AdsPreferences.getInstance(context).getInt(channel, key, 0);
     }
 
     /**
@@ -545,9 +536,8 @@ public class DspHelper {
      */
     public static void setDspSiteTriesNum(Context context, int channel, int num) {
         String key = new StringBuffer().append(SDK_SITE_TRIES_NUM)
-                                        .append("_")
-                                        .append(channel).toString();
-        AdsPreferences.getInstance(context).setInt(key, num);
+                                        .toString().trim();
+        AdsPreferences.getInstance(context).setInt(channel, key, num);
     }
 
     /**
@@ -558,9 +548,8 @@ public class DspHelper {
      */
     public static void setDspSiteTotalTriesNum(Context context, int channel, int num) {
         String key = new StringBuffer().append(SDK_SITE_TRIES_TOTAL_NUM)
-                                        .append("_")
-                                        .append(channel).toString();
-        AdsPreferences.getInstance(context).setInt(key, num);
+                                        .toString().trim();
+        AdsPreferences.getInstance(context).setInt(channel, key, num);
     }
 
     /**
@@ -571,9 +560,8 @@ public class DspHelper {
      */
     public static int getDspSiteTotalTriesNum(Context context, int channel) {
         String key = new StringBuffer().append(SDK_SITE_TRIES_TOTAL_NUM)
-                                        .append("_")
-                                        .append(channel).toString();
-        return AdsPreferences.getInstance(context).getInt(key, ConstDefine.SDK_SITE_TRIES_NUM);
+                                        .toString().trim();
+        return AdsPreferences.getInstance(context).getInt(channel, key, ConstDefine.SDK_SITE_TRIES_NUM);
     }
 
     /**
@@ -584,9 +572,8 @@ public class DspHelper {
      */
     public static boolean getDspSiteTriesFlag(Context context, int channel) {
         String key = new StringBuffer().append(SDK_SITE_TRIES_FLAG)
-                                        .append("_")
-                                        .append(channel).toString();
-        return AdsPreferences.getInstance(context).getBoolean(key, false);
+                                        .toString().trim();
+        return AdsPreferences.getInstance(context).getBoolean(channel, key, false);
     }
 
     /**
@@ -597,9 +584,8 @@ public class DspHelper {
      */
     public static void setDspSiteTriesFlag(Context context, int channel, boolean flag) {
         String key = new StringBuffer().append(SDK_SITE_TRIES_FLAG)
-                                        .append("_")
-                                        .append(channel).toString();
-        AdsPreferences.getInstance(context).setBoolean(key, flag);
+                                        .toString().trim();
+        AdsPreferences.getInstance(context).setBoolean(channel, key, flag);
     }
 
     /**
@@ -610,9 +596,8 @@ public class DspHelper {
      */
     public static long getDspSiteTriesTime(Context context, int channel) {
         String key = new StringBuffer().append(SDK_SITE_TRIES_TIME)
-                                        .append("_")
-                                        .append(channel).toString();
-        return AdsPreferences.getInstance(context).getLong(key, 0);
+                                        .toString().trim();
+        return AdsPreferences.getInstance(context).getLong(channel, key, 0);
     }
 
     /**
@@ -623,9 +608,8 @@ public class DspHelper {
      */
     public static void setDspSiteTriesTime(Context context, int channel, long time) {
         String key = new StringBuffer().append(SDK_SITE_TRIES_TIME)
-                                        .append("_")
-                                        .append(channel).toString();
-        AdsPreferences.getInstance(context).setLong(key, time);
+                                        .toString().trim();
+        AdsPreferences.getInstance(context).setLong(channel, key, time);
     }
 
     /**
@@ -702,6 +686,7 @@ public class DspHelper {
         int show = getDspSpotShowNum(context, channel);
         int request = getDspSpotRequestNum(context, channel);
         int totalNum = getDspSpotShowTotal(context, channel);
+        MLog.i(TAG, "checkDspSpotLockChannel request " + request + " show " + show + " total " + totalNum + " channel " + channel);
         if (show >= totalNum || request >= totalNum*2){
             MLog.i(TAG, "checkDspSpotLockChannel num fail !");
             return false;
