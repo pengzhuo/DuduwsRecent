@@ -48,9 +48,9 @@ public class CmActivity extends BaseActivity{
         public void onAdLoadFailed(int i) {
             MLog.i(TAG, "onAdLoadFailed " + i);
             AnalyticsUtils.onEvent(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_FAIL);
-            int triesNum = DspHelper.getDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_FACEBOOK) + 1;
+            int triesNum = DspHelper.getDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM) + 1;
             DspHelper.setDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triesNum);
-            int totalNum = DspHelper.getDspSiteTotalTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+            int totalNum = DspHelper.getDspSiteTotalTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM);
             if (triesNum >= totalNum){
                 DspHelper.setDspSiteTriesFlag(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, true);
                 DspHelper.setDspSiteTriesTime(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, System.currentTimeMillis());

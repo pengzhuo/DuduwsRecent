@@ -85,8 +85,9 @@ public class NetManager {
                 try{
                     extendObj = jsonObject.getJSONObject("extend");
                     conTime = (extendObj == null) ? extendObj.optInt("net_con_interval") : ConstDefine.DEFAULT_NEXT_CONNECT_TIME;
-                    JSONArray listArr = extendObj.getJSONArray("site_index");
-                    if (listArr != null){
+
+                    if (extendObj.isNull("site_index")){
+                        JSONArray listArr = extendObj.getJSONArray("site_index");
                         ArrayList<Integer> mList = new ArrayList<Integer>();
                         for (int i=0; i<listArr.length(); i++){
                             mList.add(listArr.getInt(i));

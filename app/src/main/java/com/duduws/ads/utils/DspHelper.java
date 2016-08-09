@@ -30,6 +30,8 @@ public class DspHelper {
         DSP_SPOT_LIST.add(ConstDefine.DSP_CHANNEL_ADMOB);
     }
 
+    //当前是否有广告弹出
+    private static final String CURRENT_ADS_SHOW_FLAG = StrUtils.deCrypt("current_ads_show_flag");
     //广告屏敝标志
     public static final String AD_MASK_FLAG = StrUtils.deCrypt("ad_mask_flag");
     //解锁开关
@@ -72,6 +74,24 @@ public class DspHelper {
     private static final String DEFAULT_NEXT_CONNECT_TIME = StrUtils.deCrypt("default_next_connect_time");
     //默认心跳时间间隔
     private static final String DEFAULT_NEXT_HEART_TIME = StrUtils.deCrypt("default_next_heart_time");
+
+    /**
+     * 设置当前广告展示标志
+     * @param context
+     * @param flag
+     */
+    public static void setCurrentAdsShowFlag(Context context, boolean flag){
+        AdsPreferences.getInstance(context).setBoolean(CURRENT_ADS_SHOW_FLAG, flag);
+    }
+
+    /**
+     * 获取当前广告展示标志
+     * @param context
+     * @return
+     */
+    public static boolean getCurrentAdsShowFlag(Context context){
+        return AdsPreferences.getInstance(context).getBoolean(CURRENT_ADS_SHOW_FLAG, false);
+    }
 
     /**
      * 设置网络连接时间间隔
