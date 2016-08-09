@@ -146,7 +146,7 @@ public class NetHelper {
                 result += line;
             }
         } catch (Exception e) {
-            MLog.e(TAG, "send post error " + e.toString());
+            MLog.e(TAG, "send post error ");
             e.printStackTrace();
         }
         //使用finally块来关闭输出流、输入流
