@@ -755,7 +755,7 @@ public class DspHelper {
         }
         //检测锁屏开关是否打开
         if (!isNetworkChangeEnable(context, channel)){
-            MLog.i(TAG, "checkDspSpotNetworkChannel lock is not enable !");
+            MLog.i(TAG, "checkDspSpotNetworkChannel network is not enable !");
             return false;
         }
         //检测时间间隔是否满足
@@ -816,7 +816,7 @@ public class DspHelper {
         }
         //检测锁屏开关是否打开
         if (!isAppEnterEnable(context, channel)){
-            MLog.i(TAG, "checkDspSpotAppEnterChannel lock is not enable !");
+            MLog.i(TAG, "checkDspSpotAppEnterChannel app enter is not enable !");
             return false;
         }
         //检测时间间隔是否满足
@@ -877,7 +877,7 @@ public class DspHelper {
         }
         //检测锁屏开关是否打开
         if (!isAppExitEnable(context, channel)){
-            MLog.i(TAG, "checkDspSpotAppExitChannel lock is not enable !");
+            MLog.i(TAG, "checkDspSpotAppExitChannel app exit is not enable !");
             return false;
         }
         //检测时间间隔是否满足
