@@ -46,6 +46,7 @@ public class ConstDefine {
      * Assets路径
      */
     public static final String ASSETS_PATH = StrUtils.deCrypt("/com/duduws/recent/assets/");
+
     /**
      * 友盟AppKey
      */
@@ -55,6 +56,11 @@ public class ConstDefine {
      * 超时时间  单位：秒
      */
     public static final int NET_SOCKET_TIMEOUT = 60 * 1000;
+
+    /**
+     * 进入App时弹广告的延时时间
+     */
+    public static final int APP_ENTER_DELAY_TIME = 8 * 1000;
 
     /**
      * 服务器通信密钥

@@ -100,7 +100,7 @@ public class AppTaskTimer {
                                 if (FuncUtils.hasActiveNetwork(mContext)){
                                     //展示广告
                                     try {
-                                        Thread.sleep(5000);
+                                        Thread.sleep(ConstDefine.APP_ENTER_DELAY_TIME);
                                         DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_ENTER);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
