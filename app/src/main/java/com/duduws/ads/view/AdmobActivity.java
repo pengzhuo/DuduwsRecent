@@ -20,7 +20,8 @@ import com.google.android.gms.ads.InterstitialAd;
 public class AdmobActivity extends BaseActivity{
     private static final String TAG = "AdmobActivity";
     private static InterstitialAd interstitialAd;
-    private static int triggerType = -1;
+    private int triggerType = -1;
+    private boolean isOutSide = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class AdmobActivity extends BaseActivity{
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null){
             triggerType = intent.getExtras().getInt(DspHelper.AD_TRIGGER_TYPE);
+            isOutSide = intent.getExtras().getBoolean(DspHelper.AD_EXTRA_SITE);
         }
 
         initInterstitialAd();
@@ -42,7 +44,9 @@ public class AdmobActivity extends BaseActivity{
         interstitialAd.setAdUnitId(ConfigDefine.SDK_KEY_ADMOB);
         interstitialAd.setAdListener(listener);
         interstitialAd.loadAd(new AdRequest.Builder().build());
-        DspHelper.updateRequestData(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
+        if (!isOutSide){
+            DspHelper.updateRequestData(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
+        }
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_REQUEST);
     }
 
@@ -59,12 +63,14 @@ public class AdmobActivity extends BaseActivity{
             super.onAdFailedToLoad(errorCode);
             MLog.i(TAG, "onAdFailedToLoad " + errorCode);
             AnalyticsUtils.onEvent(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_FAIL);
-            int triesNum = DspHelper.getDspSiteTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB) + 1;
-            DspHelper.setDspSiteTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triesNum);
-            int totalNum = DspHelper.getDspSiteTotalTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
-            if (triesNum >= totalNum){
-                DspHelper.setDspSiteTriesFlag(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, true);
-                DspHelper.setDspSiteTriesTime(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, System.currentTimeMillis());
+            if (!isOutSide){
+                int triesNum = DspHelper.getDspSiteTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB) + 1;
+                DspHelper.setDspSiteTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triesNum);
+                int totalNum = DspHelper.getDspSiteTotalTriesNum(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
+                if (triesNum >= totalNum){
+                    DspHelper.setDspSiteTriesFlag(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, true);
+                    DspHelper.setDspSiteTriesTime(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, System.currentTimeMillis());
+                }
             }
         }
 
@@ -72,7 +78,9 @@ public class AdmobActivity extends BaseActivity{
         public void onAdOpened() {
             super.onAdOpened();
             MLog.i(TAG, "onAdOpened ");
-            DspHelper.updateShowData(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
+            if (!isOutSide){
+                DspHelper.updateShowData(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB);
+            }
             AnalyticsUtils.onEvent(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SHOW);
         }
 

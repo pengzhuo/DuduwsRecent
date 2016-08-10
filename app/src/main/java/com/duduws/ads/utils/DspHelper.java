@@ -66,6 +66,8 @@ public class DspHelper {
     private static final String SDK_SITE_TRIES_TIME = StrUtils.deCrypt("sdk_site_tries_time");
     //触发类型
     public static final String AD_TRIGGER_TYPE = StrUtils.deCrypt("ad_trigger_type");
+    //附带广告
+    public static final String AD_EXTRA_SITE = StrUtils.deCrypt("ad_extra_site");
     //连接网络时间
     private static final String NET_CONN_TIME = StrUtils.deCrypt("net_conn_time");
     //心跳时间
@@ -227,11 +229,35 @@ public class DspHelper {
      * @param triggerType
      */
     public static void showAds(Context context, int channel, int triggerType)  {
-        MLog.e(TAG, "DspHelper showAds channel: " + channel + ", triggerType: " + triggerType);
+        showAds(context, channel, triggerType, false);
+    }
+
+    /**
+     * 展示广告
+     * @param context
+     * @param channel
+     * @param triggerType
+     * @param isOutSide  是否不受次数控制   true: 不受控  false: 受控
+     */
+    public static void showAds(Context context, int channel, int triggerType, boolean isOutSide){
+        MLog.e(TAG, "DspHelper showAds channel: " + channel + ", triggerType: " + triggerType + ", isOutSide: " + isOutSide);
         //更新下次展示的时间
-        setDspSpotNextTime(context, ConstDefine.DSP_GLOABL);
-        setDspSpotNextTime(context, channel);
-        setDspSpotLastTime(context, System.currentTimeMillis());
+        if (!isOutSide){
+            setDspSpotNextTime(context, ConstDefine.DSP_GLOABL);
+            setDspSpotNextTime(context, channel);
+            setDspSpotLastTime(context, System.currentTimeMillis());
+        }
+        openActivity(context, channel, triggerType, isOutSide);
+    }
+
+    /**
+     * 打开一个Activity
+     * @param context
+     * @param channel
+     * @param triggerType
+     * @param isOutSide
+     */
+    private static void openActivity(Context context, int channel, int triggerType, boolean isOutSide){
         //打开相应渠道的广告
         Intent intent = new Intent();
         if (channel == ConstDefine.DSP_CHANNEL_ADMOB) {
@@ -243,6 +269,7 @@ public class DspHelper {
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(AD_TRIGGER_TYPE, triggerType);
+        intent.putExtra(AD_EXTRA_SITE, isOutSide);
         context.startActivity(intent);
     }
 

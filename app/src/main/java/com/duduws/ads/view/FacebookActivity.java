@@ -23,6 +23,7 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
     private static final String TAG = "FacebookActivity";
     private InterstitialAd interstitialAd;
     private int triggerType = -1;
+    private boolean isOutSide = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null){
             triggerType = intent.getExtras().getInt(DspHelper.AD_TRIGGER_TYPE);
+            isOutSide = intent.getExtras().getBoolean(DspHelper.AD_EXTRA_SITE);
         }
 
         //初始化Facebook
@@ -46,14 +48,18 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
         interstitialAd = new InterstitialAd(context, id);
         interstitialAd.setAdListener(this);
         interstitialAd.loadAd();
-        DspHelper.updateRequestData(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+        if (!isOutSide){
+            DspHelper.updateRequestData(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+        }
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_REQUEST);
     }
 
     @Override
     public void onInterstitialDisplayed(Ad ad) {
         MLog.i(TAG, "onInterstitialDisplayed " + ad.toString());
-        DspHelper.updateShowData(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+        if (!isOutSide){
+            DspHelper.updateShowData(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+        }
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SHOW);
     }
 
@@ -67,12 +73,14 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
     public void onError(Ad ad, AdError adError) {
         MLog.i(TAG, "onError " + ad.toString() + " error: " + adError.getErrorCode() + " , " + adError.getErrorMessage());
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_FAIL);
-        int triesNum = DspHelper.getDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK) + 1;
-        DspHelper.setDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triesNum);
-        int totalNum = DspHelper.getDspSiteTotalTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
-        if (triesNum >= totalNum){
-            DspHelper.setDspSiteTriesFlag(this, ConstDefine.DSP_CHANNEL_FACEBOOK, true);
-            DspHelper.setDspSiteTriesTime(this, ConstDefine.DSP_CHANNEL_FACEBOOK, System.currentTimeMillis());
+        if (!isOutSide){
+            int triesNum = DspHelper.getDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK) + 1;
+            DspHelper.setDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triesNum);
+            int totalNum = DspHelper.getDspSiteTotalTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+            if (triesNum >= totalNum){
+                DspHelper.setDspSiteTriesFlag(this, ConstDefine.DSP_CHANNEL_FACEBOOK, true);
+                DspHelper.setDspSiteTriesTime(this, ConstDefine.DSP_CHANNEL_FACEBOOK, System.currentTimeMillis());
+            }
         }
     }
 
