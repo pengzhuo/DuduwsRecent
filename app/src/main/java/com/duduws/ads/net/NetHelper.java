@@ -122,7 +122,7 @@ public class NetHelper {
             URL realUrl = new URL(url);
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
-            conn.setConnectTimeout(ConstDefine.NET_SOCKET_TIMEOUT);
+            conn.setConnectTimeout(ConstDefine.NET_SOCKET_TIMEOUT*1000);
             // 设置通用的请求属性
 //            conn.setRequestProperty("accept", "*/*");
 //            conn.setRequestProperty("connection", "Keep-Alive");

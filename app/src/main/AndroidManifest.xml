@@ -55,6 +55,9 @@
             android:name="SDK_KEY_FACEBOOK"
             android:value="${SDK_KEY_FACEBOOK}"/>
         <meta-data
+            android:name="SDK_KEY_FB_NATIVE"
+            android:value="${SDK_KEY_FB_NATIVE}"/>
+        <meta-data
             android:name="SDK_KEY_CM"
             android:value="${SDK_KEY_CM}"/>
         <meta-data
@@ -87,6 +90,14 @@
             <!--</intent-filter>-->
         <!--</activity>-->
 
+        <activity
+            android:name="com.duduws.ads.view.Facebook_Native_Activity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity
+            android:name="com.duduws.ads.view.Facebook_Native_scroll_Activity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name="com.duduws.ads.view.FacebookActivity"
             android:exported="true"

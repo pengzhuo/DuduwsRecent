@@ -29,7 +29,7 @@ public class AdService extends Service{
         registerReceiver(adReceive, intentFilter);
 
         //启动APP打开和关闭的监听
-        AppTaskTimer.getInstance(this).startAppCheck();
+        AppTaskTimer.getInstance(getApplicationContext()).startAppCheck();
     }
 
     @Override

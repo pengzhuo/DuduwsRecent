@@ -56,6 +56,8 @@ public class AdmobActivity extends BaseActivity{
             super.onAdClosed();
             MLog.i(TAG, "onAdClosed ");
             AnalyticsUtils.onEvent(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_CLOSE);
+            //重置广告展示标志
+            DspHelper.setCurrentAdsShowFlag(AdmobActivity.this, false);
         }
 
         @Override
@@ -72,6 +74,8 @@ public class AdmobActivity extends BaseActivity{
                     DspHelper.setDspSiteTriesTime(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, System.currentTimeMillis());
                 }
             }
+            //重置广告展示标志
+            DspHelper.setCurrentAdsShowFlag(AdmobActivity.this, false);
         }
 
         @Override

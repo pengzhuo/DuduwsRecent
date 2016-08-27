@@ -6,7 +6,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 android {
     signingConfigs {
     }
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "com.duduws.recent"
@@ -25,6 +25,7 @@ android {
                     APP_PRODUCT_ID    : properties.getProperty("product_ct01"),
                     APP_PROTOCOL      : properties.getProperty("protocol_ct01"),
                     SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_ct01"),
+                    SDK_KEY_FB_NATIVE : properties.getProperty("key_fb_native_ct01"),
                     SDK_KEY_CM        : properties.getProperty("key_cm_ct01"),
                     SDK_KEY_ADMOB     : properties.getProperty("key_admob_ct01"),
                     SITE_INTERVAL     : properties.getProperty("site_interval_ct01"),
@@ -40,6 +41,7 @@ android {
                     APP_PRODUCT_ID    : properties.getProperty("product_c002"),
                     APP_PROTOCOL      : properties.getProperty("protocol_c002"),
                     SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_c002"),
+                    SDK_KEY_FB_NATIVE : properties.getProperty("key_fb_native_c002"),
                     SDK_KEY_CM        : properties.getProperty("key_cm_c002"),
                     SDK_KEY_ADMOB     : properties.getProperty("key_admob_c002"),
                     SITE_INTERVAL     : properties.getProperty("site_interval_c002"),
@@ -55,6 +57,7 @@ android {
                     APP_PRODUCT_ID    : properties.getProperty("product_c101"),
                     APP_PROTOCOL      : properties.getProperty("protocol_c101"),
                     SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_c101"),
+                    SDK_KEY_FB_NATIVE : properties.getProperty("key_fb_native_c101"),
                     SDK_KEY_CM        : properties.getProperty("key_cm_c101"),
                     SDK_KEY_ADMOB     : properties.getProperty("key_admob_c101"),
                     SITE_INTERVAL     : properties.getProperty("site_interval_c101"),
@@ -70,6 +73,7 @@ android {
                     APP_PRODUCT_ID    : properties.getProperty("product_c102"),
                     APP_PROTOCOL      : properties.getProperty("protocol_c102"),
                     SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_c102"),
+                    SDK_KEY_FB_NATIVE : properties.getProperty("key_fb_native_c102"),
                     SDK_KEY_CM        : properties.getProperty("key_cm_c102"),
                     SDK_KEY_ADMOB     : properties.getProperty("key_admob_c102"),
                     SITE_INTERVAL     : properties.getProperty("site_interval_c102"),
@@ -85,6 +89,7 @@ android {
                     APP_PRODUCT_ID    : properties.getProperty("product_c103"),
                     APP_PROTOCOL      : properties.getProperty("protocol_c103"),
                     SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_c103"),
+                    SDK_KEY_FB_NATIVE : properties.getProperty("key_fb_native_c103"),
                     SDK_KEY_CM        : properties.getProperty("key_cm_c103"),
                     SDK_KEY_ADMOB     : properties.getProperty("key_admob_c103"),
                     SITE_INTERVAL     : properties.getProperty("site_interval_c103"),
@@ -127,5 +132,7 @@ dependencies {
     compile(name: 'android-processes-1.0.8', ext: 'aar')
     compile files('libs/volley.jar')
     compile 'com.facebook.android:facebook-android-sdk:4.+'
-    compile 'com.google.android.gms:play-services-ads:9.2.1'
+    compile 'com.google.android.gms:play-services-ads:9.4.0'
+    compile 'com.android.support:recyclerview-v7:24.2.0'
+    compile 'com.android.support:support-v4:24.2.0'
 }

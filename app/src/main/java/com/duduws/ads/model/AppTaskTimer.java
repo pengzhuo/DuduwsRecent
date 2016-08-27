@@ -64,7 +64,32 @@ public class AppTaskTimer {
 //                        MLog.e(TAG, "startAppCheck fail !");
                     }else{
                         boolean flag = false;
-                        if (!TextUtils.isEmpty(oldPackageName) &&
+                        if (!FuncUtils.isSystemApp(mContext, packageName) &&
+                                !bbList.contains(packageName) &&
+                                !packageName.equalsIgnoreCase(mContext.getPackageName())){
+                            //检测应用进入
+                            long time = DspHelper.getDspSpotLastTime(mContext);
+                            if (!DateUtils.isToday(time)){
+                                //重置数据
+                                DspHelper.resetData(mContext);
+                            }
+
+                            int channel = DspHelper.getDspSpotAppEnterChannel(mContext);
+                            if (channel != ConstDefine.DSP_GLOABL){
+                                flag = true;
+                                if (FuncUtils.hasActiveNetwork(mContext)){
+                                    //展示广告
+                                    try {
+                                        Thread.sleep(ConstDefine.APP_ENTER_DELAY_TIME*1000);
+                                        DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_ENTER);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                        if (!flag &&
+                                !TextUtils.isEmpty(oldPackageName) &&
                                 !FuncUtils.isSystemApp(mContext, oldPackageName) &&
                                 !bbList.contains(oldPackageName) &&
                                 !oldPackageName.equalsIgnoreCase(mContext.getPackageName())){
@@ -77,34 +102,9 @@ public class AppTaskTimer {
 
                             int channel = DspHelper.getDspSpotAppExitChannel(mContext);
                             if (channel != ConstDefine.DSP_GLOABL){
-                                flag = true;
                                 if (FuncUtils.hasActiveNetwork(mContext)){
                                     //展示广告
                                     DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_EXIT);
-                                }
-                            }
-                        }
-                        if (!flag &&
-                                !FuncUtils.isSystemApp(mContext, packageName) &&
-                                !bbList.contains(packageName) &&
-                                !packageName.equalsIgnoreCase(mContext.getPackageName())){
-                            //检测应用进入
-                            long time = DspHelper.getDspSpotLastTime(mContext);
-                            if (!DateUtils.isToday(time)){
-                                //重置数据
-                                DspHelper.resetData(mContext);
-                            }
-
-                            int channel = DspHelper.getDspSpotAppEnterChannel(mContext);
-                            if (channel != ConstDefine.DSP_GLOABL){
-                                if (FuncUtils.hasActiveNetwork(mContext)){
-                                    //展示广告
-                                    try {
-                                        Thread.sleep(ConstDefine.APP_ENTER_DELAY_TIME);
-                                        DspHelper.showAds(mContext, channel, ConstDefine.TRIGGER_TYPE_APP_ENTER);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
                                 }
                             }
                         }

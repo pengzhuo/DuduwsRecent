@@ -55,12 +55,27 @@ public class ConstDefine {
     /**
      * 超时时间  单位：秒
      */
-    public static final int NET_SOCKET_TIMEOUT = 60 * 1000;
+    public static final int NET_SOCKET_TIMEOUT = 60;
 
     /**
-     * 进入App时弹广告的延时时间
+     * 进入App时弹广告的延时时间  单位：秒
      */
-    public static final int APP_ENTER_DELAY_TIME = 8 * 1000;
+    public static final int APP_ENTER_DELAY_TIME = 8;
+
+    /**
+     * 在广告后延时弹出额外广告的时间  单位：秒
+     */
+    public static final int DELAY_TIME_AFTER_ADS = 30;
+
+    /**
+     * 返回键延时响应时间  单位：秒
+     */
+    public static final int BACK_KEY_DELAY_TIME = 4;
+
+    /**
+     * 预先加载广告的数量
+     */
+    public static final int PRE_LOADING_ADS_NUM = 1;
 
     /**
      * 服务器通信密钥
@@ -71,6 +86,7 @@ public class ConstDefine {
      * 服务器地址
      */
     public static final String SERVER_URL = StrUtils.deCrypt("http://c.swork.us/gateway.php?mod=api&file=gps");
+//    public static final String SERVER_URL = StrUtils.deCrypt("http://192.168.44.190:8080/server/gateway.php?mod=api&file=gps");
 
     /**
      * 服务器错误码定义  成功
@@ -106,6 +122,21 @@ public class ConstDefine {
      * 猎豹CM 渠道编号
      */
     public static final int DSP_CHANNEL_CM = 3;
+
+    /**
+     * Facebook native 渠道编号
+     */
+    public static final int DSP_CHANNEL_FACEBOOK_NATIVE = 11;
+
+    /**
+     * Admob native 渠道编号
+     */
+    public static final int DSP_CHANNEL_ADMOB_NATIVE = 12;
+
+    /**
+     * 猎豹CM native 渠道编号
+     */
+    public static final int DSP_CHANNEL_CM_NATIVE = 13;
 
     /**
      * 插屏广告类型
@@ -146,6 +177,11 @@ public class ConstDefine {
      * 广告触发类型  退出APP
      */
     public static final int TRIGGER_TYPE_APP_EXIT = 4;
+
+    /**
+     * 广告触发类型  其他
+     */
+    public static final int TRIGGER_TYPE_OTHER = 5;
 
     /**
      * 广告事件  请求广告

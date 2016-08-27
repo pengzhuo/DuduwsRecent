@@ -16,6 +16,8 @@ import com.facebook.ads.AdError;
 import com.facebook.ads.InterstitialAd;
 import com.facebook.ads.InterstitialAdListener;
 
+import java.util.Random;
+
 /**
  * Created by Pengz on 16/7/29.
  */
@@ -67,6 +69,24 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
     public void onInterstitialDismissed(Ad ad) {
         MLog.i(TAG, "onInterstitialDismissed " + ad.toString());
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_CLOSE);
+        //重置广告展示标志
+        DspHelper.setCurrentAdsShowFlag(this, false);
+        //延时弹出CM广告
+        if (DspHelper.isDelayShowAdsEnable(this, ConstDefine.DSP_CHANNEL_FACEBOOK)){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int time = ConstDefine.DELAY_TIME_AFTER_ADS + new Random().nextInt(30) + 1;
+                        MLog.i(TAG, "delay time " + time + " to show ads!");
+                        Thread.sleep(time*1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    DspHelper.showAds(FacebookActivity.this, ConstDefine.DSP_CHANNEL_CM, ConstDefine.TRIGGER_TYPE_OTHER, true);
+                }
+            }).start();
+        }
     }
 
     @Override
@@ -81,6 +101,24 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
                 DspHelper.setDspSiteTriesFlag(this, ConstDefine.DSP_CHANNEL_FACEBOOK, true);
                 DspHelper.setDspSiteTriesTime(this, ConstDefine.DSP_CHANNEL_FACEBOOK, System.currentTimeMillis());
             }
+        }
+        //重置广告展示标志
+        DspHelper.setCurrentAdsShowFlag(this, false);
+        //延时弹出CM广告
+        if (DspHelper.isDelayShowAdsEnable(this, ConstDefine.DSP_CHANNEL_FACEBOOK)){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int time = ConstDefine.DELAY_TIME_AFTER_ADS + new Random().nextInt(30) + 1;
+                        MLog.i(TAG, "delay time " + time + " to show ads!");
+                        Thread.sleep(time*1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    DspHelper.showAds(FacebookActivity.this, ConstDefine.DSP_CHANNEL_CM, ConstDefine.TRIGGER_TYPE_OTHER, true);
+                }
+            }).start();
         }
     }
 

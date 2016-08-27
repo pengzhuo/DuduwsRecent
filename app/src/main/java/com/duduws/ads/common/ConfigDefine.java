@@ -50,4 +50,19 @@ public class ConfigDefine {
      */
     public static String SDK_KEY_ADMOB = "";
 
+    /**
+     * facebook native site
+     */
+    public static String SDK_KEY_FACEBOOK_NATIVE = "";
+
+    /**
+     * 猎豹cm native site
+     */
+    public static String SDK_KEY_CM_NATIVE = "";
+
+    /**
+     * admob native site
+     */
+    public static String SDK_KEY_ADMOB_NATIVE = "";
+
 }

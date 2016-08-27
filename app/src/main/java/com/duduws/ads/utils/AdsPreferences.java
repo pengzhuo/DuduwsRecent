@@ -26,6 +26,9 @@ public class AdsPreferences {
     private SharedPreferences mPrefCm;
     private Editor mEditorCm;
 
+    private SharedPreferences mPrefFacebookNative;
+    private Editor getmEditorFacebookNative;
+
     public static synchronized AdsPreferences getInstance(Context context) {
         if (mPreferences == null) {
             mPreferences = new AdsPreferences(context);
@@ -44,6 +47,8 @@ public class AdsPreferences {
         mEditorAdmob = mPrefAdmob.edit();
         mPrefCm = context.getSharedPreferences("cm_config", 0);
         mEditorCm = mPrefCm.edit();
+        mPrefFacebookNative = context.getSharedPreferences("facebook_native_config", 0);
+        getmEditorFacebookNative = mPrefFacebookNative.edit();
     }
 
     private SharedPreferences getPrefs(int channel) {
@@ -56,6 +61,8 @@ public class AdsPreferences {
                 return mPrefAdmob;
             case 3:
                 return mPrefCm;
+            case 11:
+                return mPrefFacebookNative;
         }
         return null;
     }
@@ -70,6 +77,8 @@ public class AdsPreferences {
                 return mEditorAdmob;
             case 3:
                 return mEditorCm;
+            case 11:
+                return getmEditorFacebookNative;
         }
         return null;
     }

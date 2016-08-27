@@ -9,6 +9,7 @@ import com.duduws.ads.log.MLog;
 import com.duduws.ads.view.AdmobActivity;
 import com.duduws.ads.view.CmActivity;
 import com.duduws.ads.view.FacebookActivity;
+import com.duduws.ads.view.Facebook_Native_Activity;
 
 import java.util.ArrayList;
 
@@ -24,14 +25,23 @@ public class DspHelper {
     //banner数组
     private static ArrayList<Integer> DSP_BANNER_LIST = new ArrayList<Integer>();
 
+    //App进入退出数组
+    private static ArrayList<Integer> DSP_APP_LIST = new ArrayList<Integer>();
+
     static {
+        //设置默认值
         DSP_SPOT_LIST.add(ConstDefine.DSP_CHANNEL_FACEBOOK);
         DSP_SPOT_LIST.add(ConstDefine.DSP_CHANNEL_CM);
         DSP_SPOT_LIST.add(ConstDefine.DSP_CHANNEL_ADMOB);
+        //App的进入和退出单独走控制流程，目前只触发facebook native
+        DSP_APP_LIST.add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
     }
 
+    //延时广告标志
+    private static final String DELAY_ADS_FLAG = StrUtils.deCrypt("delay_ads_flag");
     //当前是否有广告弹出
     private static final String CURRENT_ADS_SHOW_FLAG = StrUtils.deCrypt("current_ads_show_flag");
+    private static boolean CURRENT_ADS_SHOW_FLAG_EX = false;
     //广告屏敝标志
     public static final String AD_MASK_FLAG = StrUtils.deCrypt("ad_mask_flag");
     //解锁开关
@@ -76,6 +86,10 @@ public class DspHelper {
     private static final String DEFAULT_NEXT_CONNECT_TIME = StrUtils.deCrypt("default_next_connect_time");
     //默认心跳时间间隔
     private static final String DEFAULT_NEXT_HEART_TIME = StrUtils.deCrypt("default_next_heart_time");
+    //广告位触发类型
+    private static final String DSP_ADS_TRIGGER_TYPE = StrUtils.deCrypt("dsp_ads_trigger_type");
+    //广告位类型
+    private static final String DSP_ADS_TYPE = StrUtils.deCrypt("dsp_ads_type");
 
     /**
      * 设置当前广告展示标志
@@ -83,7 +97,8 @@ public class DspHelper {
      * @param flag
      */
     public static void setCurrentAdsShowFlag(Context context, boolean flag){
-        AdsPreferences.getInstance(context).setBoolean(CURRENT_ADS_SHOW_FLAG, flag);
+//        AdsPreferences.getInstance(context).setBoolean(CURRENT_ADS_SHOW_FLAG, flag);
+        CURRENT_ADS_SHOW_FLAG_EX = flag;
     }
 
     /**
@@ -92,7 +107,8 @@ public class DspHelper {
      * @return
      */
     public static boolean getCurrentAdsShowFlag(Context context){
-        return AdsPreferences.getInstance(context).getBoolean(CURRENT_ADS_SHOW_FLAG, false);
+//        return AdsPreferences.getInstance(context).getBoolean(CURRENT_ADS_SHOW_FLAG, false);
+        return CURRENT_ADS_SHOW_FLAG_EX;
     }
 
     /**
@@ -184,6 +200,14 @@ public class DspHelper {
     }
 
     /**
+     * 设置App进入退出数组
+     * @param list
+     */
+    public static void setDspAppList(ArrayList<Integer> list) {
+        DSP_APP_LIST = list;
+    }
+
+    /**
      * 重置数据
      * @param context
      */
@@ -257,7 +281,12 @@ public class DspHelper {
      * @param triggerType
      * @param isOutSide
      */
-    private static void openActivity(Context context, int channel, int triggerType, boolean isOutSide){
+    private static synchronized void openActivity(Context context, int channel, int triggerType, boolean isOutSide){
+        if (getCurrentAdsShowFlag(context)){
+            MLog.e(TAG, "openActivity already open ads! channel: " + channel + ", triggerType: " + triggerType + ", isOutSide: " + isOutSide);
+            return;
+        }
+        setCurrentAdsShowFlag(context, true);
         //打开相应渠道的广告
         Intent intent = new Intent();
         if (channel == ConstDefine.DSP_CHANNEL_ADMOB) {
@@ -266,11 +295,78 @@ public class DspHelper {
             intent.setClass(context.getApplicationContext(), FacebookActivity.class);
         } else if (channel == ConstDefine.DSP_CHANNEL_CM){
             intent.setClass(context.getApplicationContext(), CmActivity.class);
+        } else if (channel == ConstDefine.DSP_CHANNEL_ADMOB_NATIVE) {
+            return;
+        } else if (channel == ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE) {
+            intent.setClass(context.getApplicationContext(), Facebook_Native_Activity.class);
+        } else if (channel == ConstDefine.DSP_CHANNEL_CM_NATIVE) {
+            return;
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(AD_TRIGGER_TYPE, triggerType);
         intent.putExtra(AD_EXTRA_SITE, isOutSide);
         context.startActivity(intent);
+    }
+
+    /**
+     * 设置广告位的触发类型
+     * @param context
+     * @param channel
+     * @param type
+     */
+    public static void setAdTriggerType(Context context, int channel, int type){
+        AdsPreferences.getInstance(context).setInt(channel, DSP_ADS_TRIGGER_TYPE, type);
+    }
+
+    /**
+     * 获取广告位的触发类型
+     * @param context
+     * @param channel
+     * @return
+     */
+    public static int getAdTriggerType(Context context, int channel){
+        return AdsPreferences.getInstance(context).getInt(channel, DSP_ADS_TRIGGER_TYPE, 0);
+    }
+
+    /**
+     * 设置广告位类型
+     * @param context
+     * @param channel
+     * @param type  1 spot  2 banner  3 native
+     */
+    public static void setDspAdsType(Context context, int channel, int type){
+        AdsPreferences.getInstance(context).setInt(channel, DSP_ADS_TYPE, type);
+    }
+
+    /**
+     * 获取广告位类型
+     * @param context
+     * @param channel
+     * @return
+     */
+    public static int getDspAdsType(Context context, int channel){
+        return AdsPreferences.getInstance(context).getInt(channel, DSP_ADS_TYPE, 1);
+    }
+
+    /**
+     * 获取是否允许延时弹出广告
+     * @param context
+     * @param channel
+     * @return
+     */
+    public static boolean isDelayShowAdsEnable(Context context, int channel){
+        return AdsPreferences.getInstance(context).getBoolean(channel, DELAY_ADS_FLAG, true);
+    }
+
+    /**
+     * 设置是否允许延时弹出广告
+     * @param context
+     * @param channel
+     * @param flag
+     */
+    public static void setDelayAdsFlag(Context context, int channel, boolean flag){
+        MLog.i(TAG, "setDelayAdsFlag channel: " + channel + ", flag: " + flag);
+        AdsPreferences.getInstance(context).setBoolean(channel, DELAY_ADS_FLAG, flag);
     }
 
     /**
@@ -814,15 +910,15 @@ public class DspHelper {
             MLog.i(TAG, "getDspSpotAppEnterChannel mask ad !");
             return channel;
         }
-        //检测全局条件
-        if (!checkDspSpotAppEnterChannel(context, ConstDefine.DSP_GLOABL)){
-            MLog.i(TAG, "getDspSpotAppEnterChannel gloabl condition fail !");
-            return channel;
-        }
+        //检测全局条件  App进入不受全局条件控制
+//        if (!checkDspSpotAppEnterChannel(context, ConstDefine.DSP_GLOABL)){
+//            MLog.i(TAG, "getDspSpotAppEnterChannel gloabl condition fail !");
+//            return channel;
+//        }
         //检测单个SITE条件
-        for (int i=0; i<DSP_SPOT_LIST.size(); i++){
-            if (checkDspSpotAppEnterChannel(context, DSP_SPOT_LIST.get(i))){
-                channel = DSP_SPOT_LIST.get(i);
+        for (int i=0; i<DSP_APP_LIST.size(); i++){
+            if (checkDspSpotAppEnterChannel(context, DSP_APP_LIST.get(i))){
+                channel = DSP_APP_LIST.get(i);
                 break;
             }
         }
@@ -838,18 +934,18 @@ public class DspHelper {
     private static boolean checkDspSpotAppEnterChannel(Context context, int channel) {
         boolean ret = true;
         if (isTriesVaild(context, channel)) {
-            MLog.i(TAG, "checkDspSpotAppEnterChannel tries fail !");
+            MLog.i(TAG, "checkDspSpotAppEnterChannel tries fail ! " + channel);
             return false;
         }
         //检测锁屏开关是否打开
         if (!isAppEnterEnable(context, channel)){
-            MLog.i(TAG, "checkDspSpotAppEnterChannel app enter is not enable !");
+            MLog.i(TAG, "checkDspSpotAppEnterChannel app enter is not enable ! " + channel);
             return false;
         }
         //检测时间间隔是否满足
         long lastTime = getDspSpotNextTime(context, channel);
         if (System.currentTimeMillis() < lastTime) {
-            MLog.i(TAG, "checkDspSpotAppEnterChannel time fail !");
+            MLog.i(TAG, "checkDspSpotAppEnterChannel time fail ! " + channel + " time:" + lastTime + " - " + System.currentTimeMillis());
             return false;
         }
         //检测次数是否满足
@@ -857,7 +953,7 @@ public class DspHelper {
         int request = getDspSpotRequestNum(context, channel);
         int totalNum = getDspSpotShowTotal(context, channel);
         if (show >= totalNum || request >= totalNum*2){
-            MLog.i(TAG, "checkDspSpotAppEnterChannel num fail !");
+            MLog.i(TAG, "checkDspSpotAppEnterChannel num fail ! " + channel);
             return false;
         }
         return ret;
@@ -875,15 +971,15 @@ public class DspHelper {
             MLog.i(TAG, "getDspSpotAppExitChannel mask ad !");
             return channel;
         }
-        //检测全局条件
-        if (!checkDspSpotAppExitChannel(context, ConstDefine.DSP_GLOABL)){
-            MLog.i(TAG, "getDspSpotAppExitChannel gloabl condition fail !");
-            return channel;
-        }
+        //检测全局条件  App退出不受全局条件控制
+//        if (!checkDspSpotAppExitChannel(context, ConstDefine.DSP_GLOABL)){
+//            MLog.i(TAG, "getDspSpotAppExitChannel gloabl condition fail !");
+//            return channel;
+//        }
         //检测单个SITE条件
-        for (int i=0; i<DSP_SPOT_LIST.size(); i++){
-            if (checkDspSpotAppExitChannel(context, DSP_SPOT_LIST.get(i))){
-                channel = DSP_SPOT_LIST.get(i);
+        for (int i=0; i<DSP_APP_LIST.size(); i++){
+            if (checkDspSpotAppExitChannel(context, DSP_APP_LIST.get(i))){
+                channel = DSP_APP_LIST.get(i);
                 break;
             }
         }
@@ -899,18 +995,18 @@ public class DspHelper {
     private static boolean checkDspSpotAppExitChannel(Context context, int channel) {
         boolean ret = true;
         if (isTriesVaild(context, channel)) {
-            MLog.i(TAG, "checkDspSpotAppExitChannel tries fail !");
+            MLog.i(TAG, "checkDspSpotAppExitChannel tries fail ! " + channel);
             return false;
         }
         //检测锁屏开关是否打开
         if (!isAppExitEnable(context, channel)){
-            MLog.i(TAG, "checkDspSpotAppExitChannel app exit is not enable !");
+            MLog.i(TAG, "checkDspSpotAppExitChannel app exit is not enable ! " + channel);
             return false;
         }
         //检测时间间隔是否满足
         long lastTime = getDspSpotNextTime(context, channel);
         if (System.currentTimeMillis() < lastTime) {
-            MLog.i(TAG, "checkDspSpotAppExitChannel time fail !");
+            MLog.i(TAG, "checkDspSpotAppExitChannel time fail ! " + channel + " time:" + lastTime + " - " + System.currentTimeMillis());
             return false;
         }
         //检测次数是否满足
@@ -918,7 +1014,7 @@ public class DspHelper {
         int request = getDspSpotRequestNum(context, channel);
         int totalNum = getDspSpotShowTotal(context, channel);
         if (show >= totalNum || request >= totalNum*2){
-            MLog.i(TAG, "checkDspSpotAppExitChannel num fail !");
+            MLog.i(TAG, "checkDspSpotAppExitChannel num fail ! " + channel);
             return false;
         }
         return ret;

@@ -61,6 +61,8 @@ public class CmActivity extends BaseActivity{
                     DspHelper.setDspSiteTriesTime(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, System.currentTimeMillis());
                 }
             }
+            //重置广告展示标志
+            DspHelper.setCurrentAdsShowFlag(CmActivity.this, false);
         }
 
         @Override
@@ -89,6 +91,8 @@ public class CmActivity extends BaseActivity{
         public void onAdDismissed() {
             MLog.i(TAG, "onAdDismissed ");
             AnalyticsUtils.onEvent(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_CLOSE);
+            //重置广告展示标志
+            DspHelper.setCurrentAdsShowFlag(CmActivity.this, false);
         }
     };
 }

@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.duduws.ads.common.ConfigDefine;
 import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.log.MLog;
-import com.duduws.ads.model.AppTaskTimer;
+import com.duduws.ads.model.SiteModel;
 import com.duduws.ads.utils.AdsPreferences;
 import com.duduws.ads.utils.Base64;
 import com.duduws.ads.utils.DspHelper;
@@ -85,8 +85,8 @@ public class NetManager {
                 try{
                     extendObj = jsonObject.getJSONObject("extend");
                     conTime = (extendObj == null) ? extendObj.optInt("net_con_interval") : ConstDefine.DEFAULT_NEXT_CONNECT_TIME;
-
-                    if (extendObj.isNull("site_index")){
+                    //设置DSP出现顺序
+                    if (!extendObj.isNull("site_index")){
                         JSONArray listArr = extendObj.getJSONArray("site_index");
                         ArrayList<Integer> mList = new ArrayList<Integer>();
                         for (int i=0; i<listArr.length(); i++){
@@ -94,6 +94,23 @@ public class NetManager {
 //                            MLog.e(TAG, "@@@@@@@@@@@@@@@ " + listArr.getInt(i));
                         }
                         DspHelper.setDspSpotList(mList);
+                    }
+                    if (!extendObj.isNull("site_index_ex")){
+                        JSONArray listArr = extendObj.getJSONArray("site_index_ex");
+                        ArrayList<Integer> mList = new ArrayList<Integer>();
+                        for (int i=0; i<listArr.length(); i++){
+                            mList.add(listArr.getInt(i));
+//                            MLog.e(TAG, "@@@@@@@@@@@@@@@ " + listArr.getInt(i));
+                        }
+                        DspHelper.setDspAppList(mList);
+                    }
+                    //设置是否允许延时广告
+                    if (!extendObj.isNull("delay_ads_channel")){
+                        JSONArray mArr = extendObj.getJSONArray("delay_ads_channel");
+                        for (int i=0; i<mArr.length(); i++){
+                            JSONObject jObj = mArr.getJSONObject(i);
+                            DspHelper.setDelayAdsFlag(context, jObj.getInt("cid"), jObj.getBoolean("flag"));
+                        }
                     }
                 }catch (Exception e){
                     e.printStackTrace();
@@ -129,22 +146,38 @@ public class NetManager {
                             continue;
                         }
                         String sdkName = obj.optString("sdk_name");
+                        int adType = obj.optInt("adtype", 1);
                         int channel = ConstDefine.DSP_GLOABL;
-                        if (sdkName.equals("admob")){
-                            channel = ConstDefine.DSP_CHANNEL_ADMOB;
-                            ConfigDefine.SDK_KEY_ADMOB = obj.optString("site");
-                        } else if (sdkName.equals("facebook")){
-                            channel = ConstDefine.DSP_CHANNEL_FACEBOOK;
-                            ConfigDefine.SDK_KEY_FACEBOOK = obj.optString("site");
-                        } else if (sdkName.equals("cm")){
-                            channel = ConstDefine.DSP_CHANNEL_CM;
-                            ConfigDefine.SDK_KEY_CM = obj.optString("site");
+                        //设置SDK与原生广告的site
+                        if (adType == ConstDefine.AD_TYPE_SDK_SPOT){
+                            if (sdkName.equals("admob")){
+                                channel = ConstDefine.DSP_CHANNEL_ADMOB;
+                                ConfigDefine.SDK_KEY_ADMOB = obj.optString("site");
+                            } else if (sdkName.equals("facebook")){
+                                channel = ConstDefine.DSP_CHANNEL_FACEBOOK;
+                                ConfigDefine.SDK_KEY_FACEBOOK = obj.optString("site");
+                            } else if (sdkName.equals("cm")){
+                                channel = ConstDefine.DSP_CHANNEL_CM;
+                                ConfigDefine.SDK_KEY_CM = obj.optString("site");
+                            }
+                        }else if(adType == ConstDefine.AD_TYPE_NATIVE_SPOT){
+                            if (sdkName.equals("admob")){
+                                channel = ConstDefine.DSP_CHANNEL_ADMOB_NATIVE;
+                                ConfigDefine.SDK_KEY_ADMOB_NATIVE = obj.optString("site");
+                            } else if (sdkName.equals("facebook")){
+                                channel = ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE;
+                                ConfigDefine.SDK_KEY_FACEBOOK_NATIVE = obj.optString("site");
+                            } else if (sdkName.equals("cm")){
+                                channel = ConstDefine.DSP_CHANNEL_CM_NATIVE;
+                                ConfigDefine.SDK_KEY_CM_NATIVE = obj.optString("site");
+                            }
                         }
 
                         if (channel == ConstDefine.DSP_GLOABL){
                             continue;
                         }
 
+                        int triggerType = obj.optInt("trigger_type", 0);  //触发类型  0 解锁，开网  1 APP进入，退出
                         int netSwitch = obj.optInt("net_action", 1);
                         int lockSwitch = obj.optInt("lock_action", 1);
                         int appEnterSwitch = obj.optInt("topapp_enter_action", 1);
@@ -154,6 +187,28 @@ public class NetManager {
                         int triesNum = obj.optInt("tries_num", ConstDefine.SDK_SITE_TRIES_NUM);
                         int resetNum = obj.optInt("reset_day_num", ConstDefine.SDK_SITE_RESET_NUM);
 
+                        StringBuffer sb = new StringBuffer();
+                        sb.append("set site info ")
+                                .append(channel)
+                                .append(",")
+                                .append(triggerType)
+                                .append(",")
+                                .append(netSwitch)
+                                .append(",")
+                                .append(lockSwitch)
+                                .append(",")
+                                .append(appEnterSwitch)
+                                .append(",")
+                                .append(appExitSwitch)
+                                .append(",")
+                                .append(appCount)
+                                .append(",")
+                                .append(appInterval)
+                                .append(",")
+                                .append(triesNum)
+                                .append(",")
+                                .append(resetNum);
+                        MLog.d(TAG, "set site info " + sb.toString());
                         DspHelper.setLockEnable(context, channel, lockSwitch);
                         DspHelper.setNetworkEnable(context, channel, netSwitch);
                         DspHelper.setAppEnterEnable(context, channel, appEnterSwitch);
@@ -162,6 +217,8 @@ public class NetManager {
                         DspHelper.setDspSpotIntervalTime(context, channel, appInterval*1000L);
                         DspHelper.setDspSiteTotalTriesNum(context, channel, triesNum);
                         DspHelper.setDspSiteResetDay(context, channel, resetNum);
+                        DspHelper.setAdTriggerType(context, channel, triggerType);
+                        DspHelper.setDspAdsType(context, channel, adType);
                     }
                 }
 
