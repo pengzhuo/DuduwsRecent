@@ -26,6 +26,7 @@ public class AdService extends Service{
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(adReceive, intentFilter);
 
         //连接服务器

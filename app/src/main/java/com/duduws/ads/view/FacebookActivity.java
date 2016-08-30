@@ -87,6 +87,7 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
                 }
             }).start();
         }
+        finish();
     }
 
     @Override
@@ -133,5 +134,6 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
     public void onAdClicked(Ad ad) {
         MLog.i(TAG, "onAdClicked " + ad.toString());
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_CLICK);
+        finish();
     }
 }

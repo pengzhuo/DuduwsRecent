@@ -35,23 +35,31 @@ public class BaseActivity extends Activity implements OnItemClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.icon_file_activity);
 
         //初始化数据统计接口
         AnalyticsUtils.getInstance(getApplicationContext());
 
-        WindowManager.LayoutParams a = getWindow().getAttributes();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        a.gravity = Gravity.CENTER;
-        a.dimAmount = 0.75f;
-        getWindow().setAttributes(a);
+        if (savedInstanceState != null && savedInstanceState.getBoolean("TRIGGER_TYPE_APP_ENTER", false)){
+            WindowManager.LayoutParams a = getWindow().getAttributes();
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            a.gravity = Gravity.CENTER;
+            a.dimAmount = 0.0f;
+            getWindow().setAttributes(a);
+        }else{
+            setContentView(R.layout.icon_file_activity);
+            WindowManager.LayoutParams a = getWindow().getAttributes();
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            a.gravity = Gravity.CENTER;
+            a.dimAmount = 0.75f;
+            getWindow().setAttributes(a);
 
-        mPkgList = new ArrayList<PackageElement>();
-        mList = new AdItemList();
-        mAdNum = 0;
+            mPkgList = new ArrayList<PackageElement>();
+            mList = new AdItemList();
+            mAdNum = 0;
 
-        initView();
-        initData();
+            initView();
+            initData();
+        }
     }
 
     private void initView() {

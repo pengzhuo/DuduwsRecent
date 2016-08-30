@@ -76,6 +76,7 @@ public class CmActivity extends BaseActivity{
         public void onAdClicked() {
             MLog.i(TAG, "onAdClicked ");
             AnalyticsUtils.onEvent(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_CLICK);
+            finish();
         }
 
         @Override
@@ -93,6 +94,7 @@ public class CmActivity extends BaseActivity{
             AnalyticsUtils.onEvent(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_CLOSE);
             //重置广告展示标志
             DspHelper.setCurrentAdsShowFlag(CmActivity.this, false);
+            finish();
         }
     };
 }

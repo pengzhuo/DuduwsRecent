@@ -292,7 +292,8 @@ public class DspHelper {
         if (channel == ConstDefine.DSP_CHANNEL_ADMOB) {
             intent.setClass(context.getApplicationContext(), AdmobActivity.class);
         } else if (channel == ConstDefine.DSP_CHANNEL_FACEBOOK){
-            intent.setClass(context.getApplicationContext(), FacebookActivity.class);
+//            intent.setClass(context.getApplicationContext(), FacebookActivity.class);
+            intent.setClass(context.getApplicationContext(), Facebook_Native_Activity.class);
         } else if (channel == ConstDefine.DSP_CHANNEL_CM){
             intent.setClass(context.getApplicationContext(), CmActivity.class);
         } else if (channel == ConstDefine.DSP_CHANNEL_ADMOB_NATIVE) {

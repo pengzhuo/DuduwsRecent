@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -81,10 +82,21 @@ public class Facebook_Native_scroll_Activity extends BaseActivity implements Nat
                 adView = (RelativeLayout)inflater.inflate(R.layout.ad_unit, nativeAdContainer, false);
             } else if (triggerType == ConstDefine.TRIGGER_TYPE_APP_EXIT){
                 adView = (RelativeLayout)inflater.inflate(R.layout.ad_unit_ex, nativeAdContainer, false);
+            } else {
+                adView = (RelativeLayout)inflater.inflate(R.layout.ad_unit, nativeAdContainer, false);
             }
             nativeAdContainer.addView(adView);
             nativeAd.unregisterView();
             inflateAd(nativeAd, adView);
+            nativeAd.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        Facebook_Native_scroll_Activity.this.finish();
+                    }
+                    return false;
+                }
+            });
         }
     }
 

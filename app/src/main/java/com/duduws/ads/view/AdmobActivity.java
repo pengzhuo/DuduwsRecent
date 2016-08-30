@@ -58,6 +58,7 @@ public class AdmobActivity extends BaseActivity{
             AnalyticsUtils.onEvent(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_CLOSE);
             //重置广告展示标志
             DspHelper.setCurrentAdsShowFlag(AdmobActivity.this, false);
+            finish();
         }
 
         @Override
@@ -93,6 +94,7 @@ public class AdmobActivity extends BaseActivity{
             super.onAdLeftApplication();
             MLog.i(TAG, "onAdLeftApplication ");
             AnalyticsUtils.onEvent(AdmobActivity.this, ConstDefine.DSP_CHANNEL_ADMOB, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_CLICK);
+            finish();
         }
 
         @Override

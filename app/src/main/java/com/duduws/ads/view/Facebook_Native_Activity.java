@@ -2,9 +2,12 @@ package com.duduws.ads.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,13 +47,19 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null){
             triggerType = intent.getExtras().getInt(DspHelper.AD_TRIGGER_TYPE);
             isOutSide = intent.getExtras().getBoolean(DspHelper.AD_EXTRA_SITE);
         }
+
+        if (triggerType == ConstDefine.TRIGGER_TYPE_APP_ENTER){
+            if (savedInstanceState == null){
+                savedInstanceState = new Bundle();
+            }
+            savedInstanceState.putBoolean("TRIGGER_TYPE_APP_ENTER", true);
+        }
+        super.onCreate(savedInstanceState);
 
         timeDelay = System.currentTimeMillis();
 
@@ -95,6 +104,8 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
             adView = (RelativeLayout)inflater.inflate(R.layout.ad_unit, nativeAdContainer, false);
         } else if (triggerType == ConstDefine.TRIGGER_TYPE_APP_EXIT){
             adView = (RelativeLayout)inflater.inflate(R.layout.ad_unit_ex, nativeAdContainer, false);
+        } else {
+            adView = (RelativeLayout)inflater.inflate(R.layout.ad_unit, nativeAdContainer, false);
         }
         nativeAdContainer.addView(adView);
 
@@ -111,6 +122,7 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
     public void onAdClicked(Ad ad) {
         MLog.i(TAG, "facebook native ad onAdClicked!");
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE, triggerType, ConstDefine.AD_TYPE_NATIVE_SPOT, ConstDefine.AD_RESULT_CLICK);
+        finish();
     }
 
     private void inflateAd(NativeAd nativeAd, View adView){

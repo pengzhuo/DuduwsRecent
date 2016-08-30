@@ -60,6 +60,19 @@ public class AdReceive extends BroadcastReceiver{
         } else if (action.equalsIgnoreCase(ConstDefine.ACTION_RESTART_SERVER)) {
             //重启服务
             handleRestartService(context, ConstDefine.SERVICE_RESTART_SELF);
+        } else if (action.equalsIgnoreCase(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
+            //Home键
+            String reason = intent.getStringExtra("reason");
+            if (reason.equalsIgnoreCase("homekey")){
+                //短按home键
+                DspHelper.setCurrentAdsShowFlag(context, false);  //重置广告展示标志
+            }else if (reason.equalsIgnoreCase("recentapps")){
+                //长按home键或者是activity切换键
+            }else if (reason.equalsIgnoreCase("lock")){
+                //锁屏
+            }else if (reason.equalsIgnoreCase("assist")){
+                //长按home
+            }
         }
     }
 
