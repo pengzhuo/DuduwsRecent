@@ -28,6 +28,8 @@ import com.facebook.ads.AdSettings;
 import com.facebook.ads.MediaView;
 import com.facebook.ads.NativeAd;
 
+import java.util.Random;
+
 /**
  * Facebook原生广告(即时请求)
  * @author Pengz
@@ -174,8 +176,28 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         //重置广告展示标志
         DspHelper.setCurrentAdsShowFlag(this, false);
+        delayShowCmAds();
+        super.onDestroy();
+    }
+
+    //延时弹出CM广告
+    private void delayShowCmAds(){
+        if (DspHelper.isDelayShowAdsEnable(this, ConstDefine.DSP_CHANNEL_FACEBOOK)){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int time = ConstDefine.DELAY_TIME_AFTER_ADS + new Random().nextInt(30) + 1;
+                        MLog.i(TAG, "delay time " + time + " to show ads!");
+                        Thread.sleep(time*1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    DspHelper.showAds(Facebook_Native_Activity.this, ConstDefine.DSP_CHANNEL_CM, ConstDefine.TRIGGER_TYPE_OTHER, true);
+                }
+            }).start();
+        }
     }
 }
