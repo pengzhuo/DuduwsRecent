@@ -48,11 +48,6 @@ public class ConstDefine {
     public static final String ASSETS_PATH = StrUtils.deCrypt("/com/duduws/recent/assets/");
 
     /**
-     * 友盟AppKey
-     */
-    public static final String APP_KEY_UMENG = StrUtils.deCrypt("577f497967e58eb2390012ed");
-
-    /**
      * 超时时间  单位：秒
      */
     public static final int NET_SOCKET_TIMEOUT = 60;

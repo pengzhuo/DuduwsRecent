@@ -65,4 +65,9 @@ public class ConfigDefine {
      */
     public static String SDK_KEY_ADMOB_NATIVE = "";
 
+    /**
+     * 友盟AppKey
+     */
+    public static String APP_KEY_UMENG = "";
+
 }

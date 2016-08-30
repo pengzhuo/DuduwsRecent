@@ -37,6 +37,9 @@
             android:value="1667565620235545"/>
         <!-- 配置参数 -->
         <meta-data
+            android:name="APP_KEY_UMENG"
+            android:value="${APP_KEY_UMENG}"/>
+        <meta-data
             android:name="APP_VERSION"
             android:value="${APP_VERSION}"/>
         <meta-data

@@ -7,8 +7,8 @@ import android.os.IBinder;
 
 import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.model.AppTaskTimer;
+import com.duduws.ads.net.NetManager;
 import com.duduws.ads.receive.AdReceive;
-import com.duduws.ads.utils.FuncUtils;
 
 /**
  * Created by Pengz on 16/7/20.
@@ -27,6 +27,9 @@ public class AdService extends Service{
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         intentFilter.addAction(Intent.ACTION_SCREEN_ON);
         registerReceiver(adReceive, intentFilter);
+
+        //连接服务器
+        NetManager.getInstance(getApplicationContext()).startRequest();
 
         //启动APP打开和关闭的监听
         AppTaskTimer.getInstance(getApplicationContext()).startAppCheck();

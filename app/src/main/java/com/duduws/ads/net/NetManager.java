@@ -47,15 +47,17 @@ public class NetManager {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                JSONObject jsonObject = NetHelper.getRequestInfo(context);
-                String str = new String(Base64.encode(XXTea.encrypt(jsonObject.toString().getBytes(), ConstDefine.XXTEA_KEY.getBytes())));
-                String response = NetHelper.sendPost(ConstDefine.SERVER_URL, str);
-                if (!TextUtils.isEmpty(response)){
-                    try {
-                        response = new String(XXTea.decrypt(Base64.decode(response.toCharArray()), ConstDefine.XXTEA_KEY.getBytes()));
-                        parseRequest(response);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                if (FuncUtils.hasActiveNetwork(context)) {
+                    JSONObject jsonObject = NetHelper.getRequestInfo(context);
+                    String str = new String(Base64.encode(XXTea.encrypt(jsonObject.toString().getBytes(), ConstDefine.XXTEA_KEY.getBytes())));
+                    String response = NetHelper.sendPost(ConstDefine.SERVER_URL, str);
+                    if (!TextUtils.isEmpty(response)) {
+                        try {
+                            response = new String(XXTea.decrypt(Base64.decode(response.toCharArray()), ConstDefine.XXTEA_KEY.getBytes()));
+                            parseRequest(response);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -288,15 +290,17 @@ public class NetManager {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                JSONObject jsonObject = NetHelper.getHeartInfo(context);
-                String str = new String(Base64.encode(XXTea.encrypt(jsonObject.toString().getBytes(), ConstDefine.XXTEA_KEY.getBytes())));
-                String response = NetHelper.sendPost(ConstDefine.SERVER_URL, str);
-                if (!TextUtils.isEmpty(response)){
-                    try {
-                        response = new String(XXTea.decrypt(Base64.decode(response.toCharArray()), ConstDefine.XXTEA_KEY.getBytes()));
-                        parseHeart(response);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                if (FuncUtils.hasActiveNetwork(context)) {
+                    JSONObject jsonObject = NetHelper.getHeartInfo(context);
+                    String str = new String(Base64.encode(XXTea.encrypt(jsonObject.toString().getBytes(), ConstDefine.XXTEA_KEY.getBytes())));
+                    String response = NetHelper.sendPost(ConstDefine.SERVER_URL, str);
+                    if (!TextUtils.isEmpty(response)) {
+                        try {
+                            response = new String(XXTea.decrypt(Base64.decode(response.toCharArray()), ConstDefine.XXTEA_KEY.getBytes()));
+                            parseHeart(response);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

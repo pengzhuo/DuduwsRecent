@@ -31,6 +31,7 @@ android {
                     SITE_INTERVAL     : properties.getProperty("site_interval_ct01"),
                     GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_ct01"),
                     NETWORK_TIME      : properties.getProperty("network_time_ct01"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_ct01"),
             ]
         }
         c002 {
@@ -47,6 +48,7 @@ android {
                     SITE_INTERVAL     : properties.getProperty("site_interval_c002"),
                     GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_c002"),
                     NETWORK_TIME      : properties.getProperty("network_time_c002"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_c002"),
             ]
         }
         c101 {
@@ -63,6 +65,7 @@ android {
                     SITE_INTERVAL     : properties.getProperty("site_interval_c101"),
                     GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_c101"),
                     NETWORK_TIME      : properties.getProperty("network_time_c101"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_c101"),
             ]
         }
         c102 {
@@ -79,6 +82,7 @@ android {
                     SITE_INTERVAL     : properties.getProperty("site_interval_c102"),
                     GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_c102"),
                     NETWORK_TIME      : properties.getProperty("network_time_c102"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_c102"),
             ]
         }
         c103 {
@@ -95,6 +99,7 @@ android {
                     SITE_INTERVAL     : properties.getProperty("site_interval_c103"),
                     GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_c103"),
                     NETWORK_TIME      : properties.getProperty("network_time_c103"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_c103"),
             ]
         }
     }

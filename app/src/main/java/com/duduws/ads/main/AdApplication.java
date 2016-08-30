@@ -41,6 +41,7 @@ public class AdApplication extends Application {
     }
 
     public void initConfigInfo(){
+        ConfigDefine.APP_KEY_UMENG      = FuncUtils.getManifestApplicationMetaData(this, "APP_KEY_UMENG");
         ConfigDefine.APP_VERSION 		= FuncUtils.getManifestApplicationMetaData(this, "APP_VERSION");
         ConfigDefine.APP_CHANNEL_ID		= FuncUtils.getManifestApplicationMetaData(this, "APP_CHANNEL_ID");
         ConfigDefine.APP_COOPERATION_ID	= FuncUtils.getManifestApplicationMetaData(this, "APP_COOPERATION_ID");
@@ -73,6 +74,7 @@ public class AdApplication extends Application {
         networkTime = networkTime.substring(3, networkTime.length());
         DspHelper.setNetConTime(this, Integer.parseInt(networkTime));
 
+        MLog.e(TAG, "APP_KEY_UMENG = " + ConfigDefine.APP_KEY_UMENG);
         MLog.e(TAG, "APP_VERSION = " + ConfigDefine.APP_VERSION);
         MLog.e(TAG, "APP_CHANNEL_ID = " + ConfigDefine.APP_CHANNEL_ID);
 

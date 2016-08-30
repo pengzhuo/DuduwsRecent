@@ -63,6 +63,9 @@ public class AdsPreferences {
                 return mPrefCm;
             case 11:
                 return mPrefFacebookNative;
+            default:
+                assert false;
+                break;
         }
         return null;
     }
@@ -79,6 +82,9 @@ public class AdsPreferences {
                 return mEditorCm;
             case 11:
                 return getmEditorFacebookNative;
+            default:
+                assert false;
+                break;
         }
         return null;
     }

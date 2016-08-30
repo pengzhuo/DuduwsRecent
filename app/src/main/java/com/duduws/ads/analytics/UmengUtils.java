@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.duduws.ads.common.ConfigDefine;
-import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.utils.TimeUtils;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
@@ -18,7 +17,7 @@ import java.util.Map;
  */
 public class UmengUtils {
     public static void init(Context context){
-        AnalyticsConfig.setAppkey(ConstDefine.APP_KEY_UMENG);
+        AnalyticsConfig.setAppkey(ConfigDefine.APP_KEY_UMENG);
         String ver = ConfigDefine.APP_CHANNEL_ID;
         AnalyticsConfig.setChannel(ver);
         MobclickAgent.updateOnlineConfig(context);
