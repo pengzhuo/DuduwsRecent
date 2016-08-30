@@ -87,7 +87,7 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
             return;
         }
         //重新延时返回键1秒
-        timeDelay = System.currentTimeMillis() + (ConstDefine.BACK_KEY_DELAY_TIME-1)*1000;
+        timeDelay = System.currentTimeMillis() - (ConstDefine.BACK_KEY_DELAY_TIME-1)*1000;
         setContentView(R.layout.activity_native_ad);
         nativeAdContainer = (LinearLayout)findViewById(R.id.native_ad_container);
         LayoutInflater inflater = LayoutInflater.from(this);
