@@ -82,7 +82,6 @@ public class AdApplication extends Application {
         MLog.e(TAG, "APP_PRODUCT_ID = " + ConfigDefine.APP_PRODUCT_ID);
 
         MLog.e(TAG, "APP_PROTOCOL = " + ConfigDefine.APP_PROTOCOL);
-        MLog.e(TAG, "ASSETS_PATH = " + ConstDefine.ASSETS_PATH);
 
         MLog.e(TAG, "SDK_KEY_FACEBOOK = " + ConfigDefine.SDK_KEY_FACEBOOK);
         MLog.e(TAG, "SDK_KEY_CM = " + ConfigDefine.SDK_KEY_CM);

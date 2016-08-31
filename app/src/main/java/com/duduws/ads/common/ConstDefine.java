@@ -43,11 +43,6 @@ public class ConstDefine {
     public static final int SERVICE_RESTART_OTHER = 3;
 
     /**
-     * Assets路径
-     */
-    public static final String ASSETS_PATH = StrUtils.deCrypt("/com/duduws/recent/assets/");
-
-    /**
      * 超时时间  单位：秒
      */
     public static final int NET_SOCKET_TIMEOUT = 60;

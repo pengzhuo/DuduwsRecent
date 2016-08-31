@@ -110,26 +110,6 @@ public class FuncUtils {
                 context.getResources().getDisplayMetrics());
     }
 
-    public static Drawable getBitmapdDrawable(String fileName) {
-        InputStream inputStream = getAssetStream(fileName);
-        BitmapDrawable mBitmapDrawable = new BitmapDrawable(null,inputStream);
-        if (inputStream != null) {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return mBitmapDrawable;
-    }
-
-    public static InputStream getAssetStream(String fileName) {
-        //FIXME 发布之前需要确认assets目录正确
-        String path = ConstDefine.ASSETS_PATH + fileName;
-        MLog.e(TAG, "assets_filepath: " + path);
-        return FuncUtils.class.getResourceAsStream(path);
-    }
-
     /**
      * 启动指定应用
      *
