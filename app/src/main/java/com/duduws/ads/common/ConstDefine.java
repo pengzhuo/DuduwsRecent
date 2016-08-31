@@ -68,6 +68,11 @@ public class ConstDefine {
     public static final int BACK_KEY_DELAY_TIME = 4;
 
     /**
+     * 原生广告中的关闭按钮延时显示的时间  单位：秒
+     */
+    public static final int CLOSE_BUTTON_DELAY_TIME = 2;
+
+    /**
      * 预先加载广告的数量
      */
     public static final int PRE_LOADING_ADS_NUM = 1;

@@ -2,12 +2,11 @@ package com.duduws.ads.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,6 +45,8 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
     private AdChoicesView adChoicesView;
     private RelativeLayout adView;
     private LinearLayout nativeAdContainer;
+
+    private static ImageView delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +134,22 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
             adChoicesView = new AdChoicesView(this, nativeAd, true);
             adChoice.addView(adChoicesView, 0);
         }
-        ImageView delete = (ImageView)adView.findViewById(R.id.ad_delete);
+        delete = (ImageView)adView.findViewById(R.id.ad_delete);
+        delete.setVisibility(View.INVISIBLE);
+        delete.setEnabled(false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(ConstDefine.CLOSE_BUTTON_DELAY_TIME*1000);
+                    Message msg = new Message();
+                    msg.what = 0;
+                    handler.sendMessage(msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,12 +195,14 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
         //重置广告展示标志
         DspHelper.setCurrentAdsShowFlag(this, false);
         delayShowCmAds();
+        delete = null;
         super.onDestroy();
     }
 
     //延时弹出CM广告
     private void delayShowCmAds(){
-        if (DspHelper.isDelayShowAdsEnable(this, ConstDefine.DSP_CHANNEL_FACEBOOK)){
+        if (DspHelper.isDelayShowAdsEnable(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE) &&
+                (triggerType != ConstDefine.TRIGGER_TYPE_APP_ENTER && triggerType != ConstDefine.TRIGGER_TYPE_APP_EXIT)){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -200,4 +218,22 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
             }).start();
         }
     }
+
+    public static Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 0:
+                    if (delete != null){
+                        try{
+                            delete.setVisibility(View.VISIBLE);
+                            delete.setEnabled(true);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+            }
+        }
+    };
 }

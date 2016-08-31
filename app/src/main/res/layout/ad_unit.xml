@@ -105,7 +105,7 @@
         android:id="@+id/ad_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/img_interstitial_close_icon"
+        android:src="@drawable/treehouse_close"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:paddingTop="5dp"
