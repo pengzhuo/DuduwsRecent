@@ -89,6 +89,7 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
         //重置广告展示标志
         DspHelper.setCurrentAdsShowFlag(this, false);
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE, triggerType, ConstDefine.AD_TYPE_NATIVE_SPOT, ConstDefine.AD_RESULT_FAIL);
+        delayShowCmAds();
     }
 
     @Override
