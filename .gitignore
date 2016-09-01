@@ -5,3 +5,9 @@
 .DS_Store
 /build
 /captures
+app-c002-release.apk
+app-c101-release.apk
+app-c102-release.apk
+app-c103-release.apk
+app-ct01-release.apk
+src/main/res/drawable-xhdpi/treehouse_close.png
