@@ -27,6 +27,8 @@ import com.facebook.ads.AdSettings;
 import com.facebook.ads.MediaView;
 import com.facebook.ads.NativeAd;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -99,7 +101,7 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
             return;
         }
         //重新延时返回键1秒
-        timeDelay = System.currentTimeMillis() - (ConstDefine.BACK_KEY_DELAY_TIME-1)*1000;
+//        timeDelay = System.currentTimeMillis() - (ConstDefine.BACK_KEY_DELAY_TIME-1)*1000;
         setContentView(R.layout.activity_native_ad);
         nativeAdContainer = (LinearLayout)findViewById(R.id.native_ad_container);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -135,21 +137,21 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
             adChoice.addView(adChoicesView, 0);
         }
         delete = (ImageView)adView.findViewById(R.id.ad_delete);
-        delete.setVisibility(View.INVISIBLE);
-        delete.setEnabled(false);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(ConstDefine.CLOSE_BUTTON_DELAY_TIME*1000);
-                    Message msg = new Message();
-                    msg.what = 0;
-                    handler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        delete.setVisibility(View.INVISIBLE);
+//        delete.setEnabled(false);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(ConstDefine.CLOSE_BUTTON_DELAY_TIME*1000);
+//                    Message msg = new Message();
+//                    msg.what = 0;
+//                    handler.sendMessage(msg);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +181,11 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
 
         // Wire up the View with the native ad, the whole nativeAdContainer will be clickable.
         RelativeLayout clickLayout = (RelativeLayout)adView.findViewById(R.id.clickLayout);
-        nativeAd.registerViewForInteraction(clickLayout);
+//        nativeAd.registerViewForInteraction(clickLayout);
+        List<View> viewList = new ArrayList<View>();
+        viewList.add(nativeAdMedia);
+        viewList.add(nativeAdCallToAction);
+        nativeAd.registerViewForInteraction(clickLayout, viewList);
     }
 
     @Override

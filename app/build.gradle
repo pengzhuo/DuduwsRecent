@@ -51,6 +51,23 @@ android {
                     APP_KEY_UMENG     : properties.getProperty("app_key_umeng_c002"),
             ]
         }
+        c004 {
+            manifestPlaceholders = [
+                    APP_VERSION       : properties.getProperty("version_c004"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_c004"),
+                    APP_COOPERATION_ID: properties.getProperty("work_c004"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_c004"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_c004"),
+                    SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_c004"),
+                    SDK_KEY_FB_NATIVE : properties.getProperty("key_fb_native_c004"),
+                    SDK_KEY_CM        : properties.getProperty("key_cm_c004"),
+                    SDK_KEY_ADMOB     : properties.getProperty("key_admob_c004"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_c004"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_c004"),
+                    NETWORK_TIME      : properties.getProperty("network_time_c004"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_c004"),
+            ]
+        }
         c101 {
             manifestPlaceholders = [
                     APP_VERSION       : properties.getProperty("version_c101"),
@@ -131,7 +148,6 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile files('libs/umeng-analytics-v6.0.1.jar')
     compile(name: 'AudienceNetwork', ext: 'aar')
     compile(name: 'cmadsdk_world_base_V3.4.7', ext: 'aar')
     compile(name: 'android-processes-1.0.8', ext: 'aar')

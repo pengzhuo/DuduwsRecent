@@ -60,7 +60,7 @@ public class ConstDefine {
     /**
      * 返回键延时响应时间  单位：秒
      */
-    public static final int BACK_KEY_DELAY_TIME = 4;
+    public static final int BACK_KEY_DELAY_TIME = 2;
 
     /**
      * 原生广告中的关闭按钮延时显示的时间  单位：秒
