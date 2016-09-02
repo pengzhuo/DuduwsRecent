@@ -24,8 +24,14 @@
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 -keepattributes InnerClasses,LineNumberTable
 
-
-
+#友盟
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
 
 -keep public class * extends android.app.Fragment
 -keep public class * extends android.app.Activity

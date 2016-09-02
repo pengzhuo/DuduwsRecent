@@ -17,11 +17,7 @@ import java.util.Map;
  */
 public class UmengUtils {
     public static void init(Context context){
-        AnalyticsConfig.setAppkey(ConfigDefine.APP_KEY_UMENG);
-        String ver = ConfigDefine.APP_CHANNEL_ID;
-        AnalyticsConfig.setChannel(ver);
-        MobclickAgent.updateOnlineConfig(context);
-        AnalyticsConfig.enableEncrypt(true);
+        MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(context, ConfigDefine.APP_KEY_UMENG, ConfigDefine.APP_CHANNEL_ID));
     }
 
     public static void onEvent(Context context, String eventId, Map<String, String> map) {
@@ -43,7 +39,7 @@ public class UmengUtils {
                 MobclickAgent.onEvent(context, eventId);
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

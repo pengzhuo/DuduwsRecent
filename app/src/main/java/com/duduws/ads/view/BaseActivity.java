@@ -16,6 +16,7 @@ import com.duduws.ads.model.AdItemList;
 import com.duduws.ads.model.PackageElement;
 import com.duduws.ads.utils.FuncUtils;
 import com.duduws.recent.R;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
@@ -82,5 +83,17 @@ public class BaseActivity extends Activity implements OnItemClickListener{
             FuncUtils.runApps(BaseActivity.this, mPkgList.get(position).getmPackageName());
         }
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
     }
 }
