@@ -122,8 +122,9 @@ public class NetManager {
                 DspHelper.setNextNetConTime(context, System.currentTimeMillis() + DspHelper.getNetConTime(context));
 
                 //解析全局参数
-                JSONObject gloablObj = jsonObject.getJSONObject("product");
-                if (gloablObj != null) {
+
+                if (!jsonObject.isNull("product")) {
+                    JSONObject gloablObj = jsonObject.getJSONObject("product");
                     int netSwitch = gloablObj.optInt("net_action", 1);
                     int lockSwitch = gloablObj.optInt("lock_action", 1);
                     int appEnterSwitch = gloablObj.optInt("topapp_enter_action", 1);
@@ -140,8 +141,9 @@ public class NetManager {
                 }
 
                 //解析单个SITE
-                JSONArray siteArray = jsonObject.getJSONArray("site");
-                if (siteArray != null) {
+
+                if (!jsonObject.isNull("site")) {
+                    JSONArray siteArray = jsonObject.getJSONArray("site");
                     for (int i=0; i<siteArray.length(); i++){
                         JSONObject obj = siteArray.getJSONObject(i);
                         if (obj == null){
@@ -225,8 +227,8 @@ public class NetManager {
                 }
 
                 //黑名单
-                JSONArray pkgArray = jsonObject.optJSONArray("blackList");
-                if (pkgArray != null) {
+                if (!jsonObject.isNull("blackList")) {
+                    JSONArray pkgArray = jsonObject.optJSONArray("blackList");
                     String bblistString = "";
                     for (int i=0; i< pkgArray.length(); i++) {
                         try {
@@ -239,9 +241,10 @@ public class NetManager {
                     }
                     AdsPreferences.getInstance(context).setString(ConstDefine.BB_LIST_STRING, bblistString);
                 }
+
                 //白名单
-                JSONObject whiteApps = jsonObject.optJSONObject("whiteList");
-                if (whiteApps != null) {
+                if (!jsonObject.isNull("whiteList")) {
+                    JSONObject whiteApps = jsonObject.optJSONObject("whiteList");
                     JSONArray whiteArr = whiteApps.optJSONArray("apps");
                     if (whiteArr != null) {
                         String recentApp = FuncUtils.getRecentAppString(context);

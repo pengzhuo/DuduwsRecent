@@ -92,8 +92,7 @@ public class FuncUtils {
         String rootPath = "";
         if (isSdCardAvailable()) {
             // /sdcard/Android/data/<application package>/cache
-            rootPath = context.getExternalCacheDir()
-                    .getPath();
+            rootPath = context.getExternalCacheDir().getPath();
         } else {
             // /data/data/<application package>/cache
             rootPath = context.getCacheDir().getPath();

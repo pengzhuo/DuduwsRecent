@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.utils.FuncUtils;
 
 /**
@@ -19,7 +20,7 @@ public class MainService extends Service {
         boolean isServiceRunning = FuncUtils.isServiceRunning(getApplicationContext(), AdService.class.getName());
         if (!isServiceRunning){
             //启动服务
-            FuncUtils.startDaemon(getApplicationContext(), "com.duduws.ads.service.AdService");
+            FuncUtils.startDaemon(getApplicationContext(), ConstDefine.ACTION_MAIN_SERVICE);
         }
     }
 
@@ -38,7 +39,7 @@ public class MainService extends Service {
         boolean isServiceRunning = FuncUtils.isServiceRunning(getApplicationContext(), AdService.class.getName());
         if (!isServiceRunning){
             //启动服务
-            FuncUtils.startDaemon(getApplicationContext(), "com.duduws.ads.service.AdService");
+            FuncUtils.startDaemon(getApplicationContext(), ConstDefine.ACTION_MAIN_SERVICE);
         }
         super.onDestroy();
     }

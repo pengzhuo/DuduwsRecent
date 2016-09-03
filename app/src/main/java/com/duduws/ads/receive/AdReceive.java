@@ -124,7 +124,7 @@ public class AdReceive extends BroadcastReceiver{
         boolean isServiceRunning = FuncUtils.isServiceRunning(context.getApplicationContext(), AdService.class.getName());
         if (!isServiceRunning){
             //启动服务
-            FuncUtils.startDaemon(context.getApplicationContext(), "com.duduws.ads.service.AdService");
+            FuncUtils.startDaemon(context.getApplicationContext(), ConstDefine.ACTION_MAIN_SERVICE);
         }
     }
 
@@ -137,7 +137,7 @@ public class AdReceive extends BroadcastReceiver{
         boolean isServiceRunning = FuncUtils.isServiceRunning(context.getApplicationContext(), AdService.class.getName());
         if (!isServiceRunning){
             //启动服务
-            FuncUtils.startDaemon(context.getApplicationContext(), "com.duduws.ads.service.AdService");
+            FuncUtils.startDaemon(context.getApplicationContext(), ConstDefine.ACTION_MAIN_SERVICE);
         }
         //Adservice服务
         handleRestartService(context, ConstDefine.SERVICE_RESTART_OTHER);

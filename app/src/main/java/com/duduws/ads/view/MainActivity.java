@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.log.MLog;
 import com.duduws.ads.service.AdService;
 import com.duduws.ads.utils.FuncUtils;
@@ -36,7 +37,7 @@ public class MainActivity extends Activity{
 
         boolean isServiceRunning = FuncUtils.isServiceRunning(getApplicationContext(), AdService.class.getName());
         if (!isServiceRunning){
-            FuncUtils.startDaemon(getApplicationContext(), "com.duduws.ads.service.AdService");
+            FuncUtils.startDaemon(getApplicationContext(), ConstDefine.ACTION_MAIN_SERVICE);
             MLog.i(TAG, "start service ...");
         }
 

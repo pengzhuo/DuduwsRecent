@@ -8,6 +8,10 @@ import com.duduws.ads.utils.StrUtils;
  */
 public class ConstDefine {
     /**
+     * 主逻辑服务类完整路径
+     */
+    public static final String ACTION_MAIN_SERVICE = StrUtils.deCrypt("com.duduws.ads.service.AdService");
+    /**
      * 连接网络ACTION
      */
     public static final String ACTION_ALARM_NETWORK = StrUtils.deCrypt("android.intent.action.alarm.duduws.network");
