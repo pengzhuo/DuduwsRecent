@@ -222,6 +222,11 @@ public class DspHelper {
             setDspSpotRequestNum(context, channel, 0);
             setDspSpotShowNum(context, channel, 0);
         }
+        for (int i=0; i<DSP_APP_LIST.size(); i++){
+            int channel = DSP_APP_LIST.get(i);
+            setDspSpotRequestNum(context, channel, 0);
+            setDspSpotShowNum(context, channel, 0);
+        }
     }
 
     /**

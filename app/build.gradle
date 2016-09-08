@@ -3,6 +3,10 @@ apply plugin: 'com.android.application'
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
+def getTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getDefault());
+}
+
 android {
     signingConfigs {
     }
@@ -14,6 +18,21 @@ android {
         targetSdkVersion 23
         versionCode 100
         versionName "1.2"
+    }
+    //打包后应用名称
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            def fileName
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                if (variant.buildType.name.equals('release')) {
+                    fileName = "app-release-${variant.productFlavors[0].name}-${defaultConfig.versionName}-${getTime()}.apk"
+                } else if (variant.buildType.name.equals('debug')) {
+                    fileName = "app-debug-${variant.productFlavors[0].name}-${defaultConfig.versionName}-${getTime()}.apk"
+                }
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
     }
 
     productFlavors {
