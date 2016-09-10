@@ -361,7 +361,7 @@ public class DspHelper {
      * @return
      */
     public static boolean isDelayShowAdsEnable(Context context, int channel){
-        return AdsPreferences.getInstance(context).getBoolean(channel, DELAY_ADS_FLAG, true);
+        return AdsPreferences.getInstance(context).getBoolean(channel, DELAY_ADS_FLAG, false);
     }
 
     /**

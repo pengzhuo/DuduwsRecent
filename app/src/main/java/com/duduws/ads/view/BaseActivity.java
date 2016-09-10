@@ -15,7 +15,7 @@ import com.duduws.ads.analytics.AnalyticsUtils;
 import com.duduws.ads.model.AdItemList;
 import com.duduws.ads.model.PackageElement;
 import com.duduws.ads.utils.FuncUtils;
-import com.duduws.recent.R;
+import com.dws.connect.R;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;

@@ -13,11 +13,11 @@ android {
     compileSdkVersion 24
     buildToolsVersion "23.0.2"
     defaultConfig {
-        applicationId "com.duduws.recent"
+        applicationId "com.dws.connect"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 100
-        versionName "1.2"
+        versionCode 1
+        versionName "1.0"
     }
     //打包后应用名称
     applicationVariants.all { variant ->
@@ -136,6 +136,23 @@ android {
                     GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_c103"),
                     NETWORK_TIME      : properties.getProperty("network_time_c103"),
                     APP_KEY_UMENG     : properties.getProperty("app_key_umeng_c103"),
+            ]
+        }
+        cs04 {
+            manifestPlaceholders = [
+                    APP_VERSION       : properties.getProperty("version_cs04"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_cs04"),
+                    APP_COOPERATION_ID: properties.getProperty("work_cs04"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_cs04"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_cs04"),
+                    SDK_KEY_FACEBOOK  : properties.getProperty("key_fb_cs04"),
+                    SDK_KEY_FB_NATIVE : properties.getProperty("key_fb_native_cs04"),
+                    SDK_KEY_CM        : properties.getProperty("key_cm_cs04"),
+                    SDK_KEY_ADMOB     : properties.getProperty("key_admob_cs04"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_cs04"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cs04"),
+                    NETWORK_TIME      : properties.getProperty("network_time_cs04"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cs04"),
             ]
         }
     }

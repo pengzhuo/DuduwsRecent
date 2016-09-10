@@ -18,7 +18,7 @@ import com.duduws.ads.common.ConfigDefine;
 import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.log.MLog;
 import com.duduws.ads.utils.DspHelper;
-import com.duduws.recent.R;
+import com.dws.connect.R;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdChoicesView;
 import com.facebook.ads.AdError;
