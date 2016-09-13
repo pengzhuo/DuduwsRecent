@@ -29,6 +29,8 @@ public class SiteModel {
             setTriesNum(obj.optInt("tries_num"));
             setResetDayNum(obj.optInt("reset_day_num"));
             setTriggerType(obj.optInt("trigger_type"));
+            setOrder(obj.optInt("order"));
+            setStatus(obj.optInt("status"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -51,6 +53,8 @@ public class SiteModel {
             json.put("tries_num", getTriesNum());
             json.put("reset_day_num", getResetDayNum());
             json.put("trigger_type", getTriggerType());
+            json.put("order", getOrder());
+            json.put("status", getStatus());
             return json.toString();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -174,6 +178,22 @@ public class SiteModel {
         this.triggerType = triggerType;
     }
 
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     private String site;
     private int adType;
     private int appCount;
@@ -188,4 +208,6 @@ public class SiteModel {
     private int triesNum;
     private int resetDayNum;
     private int triggerType;
+    private int order;
+    private int status;
 }

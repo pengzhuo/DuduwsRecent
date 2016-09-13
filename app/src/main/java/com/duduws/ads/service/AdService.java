@@ -31,6 +31,7 @@ public class AdService extends Service{
 
         //连接服务器
         NetManager.getInstance(getApplicationContext()).startRequest();
+        NetManager.getInstance(getApplicationContext()).startHeart();
 
         //启动APP打开和关闭的监听
         AppTaskTimer.getInstance(getApplicationContext()).startAppCheck();

@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.duduws.ads.common.ConstDefine;
+import com.duduws.ads.log.MLog;
+
 /**
  * @author Pengz
  * @mail pch987.net@163.com
  * @time 16/8/2 19:58
  */
 public class AdsPreferences {
+    private static final String TAG = "AdsPrefernces";
     private SharedPreferences mPref;
     private Editor mEditor;
     private static AdsPreferences mPreferences;
@@ -27,7 +31,13 @@ public class AdsPreferences {
     private Editor mEditorCm;
 
     private SharedPreferences mPrefFacebookNative;
-    private Editor getmEditorFacebookNative;
+    private Editor mEditorFacebookNative;
+
+    private SharedPreferences mPrefAdmobNative;
+    private Editor mEditorAdmobNative;
+
+    private SharedPreferences mPrefCmNative;
+    private Editor mEditorCmNative;
 
     public static synchronized AdsPreferences getInstance(Context context) {
         if (mPreferences == null) {
@@ -48,23 +58,62 @@ public class AdsPreferences {
         mPrefCm = context.getSharedPreferences("cm_config", 0);
         mEditorCm = mPrefCm.edit();
         mPrefFacebookNative = context.getSharedPreferences("facebook_native_config", 0);
-        getmEditorFacebookNative = mPrefFacebookNative.edit();
+        mEditorFacebookNative = mPrefFacebookNative.edit();
+        mPrefAdmobNative = context.getSharedPreferences("admob_native_config", 0);
+        mEditorAdmobNative = mPrefAdmobNative.edit();
+        mPrefCmNative = context.getSharedPreferences("cm_native_config", 0);
+        mEditorCmNative = mPrefCmNative.edit();
     }
 
     private SharedPreferences getPrefs(int channel) {
         switch (channel) {
-            case -1:
+            case ConstDefine.DSP_GLOABL: {
                 return mPrefGloabl;
-            case 1:
+            }
+            case ConstDefine.DSP_CHANNEL_FACEBOOK:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
                 return mPrefFacebook;
-            case 2:
-                return mPrefAdmob;
-            case 3:
-                return mPrefCm;
-            case 11:
+            }
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
                 return mPrefFacebookNative;
+            }
+            case ConstDefine.DSP_CHANNEL_ADMOB:
+            case ConstDefine.DSP_CHANNEL_ADMOB+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_ADMOB+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_ADMOB+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_ADMOB+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
+                return mPrefAdmob;
+            }
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE:
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
+                return mPrefAdmobNative;
+            }
+            case ConstDefine.DSP_CHANNEL_CM:
+            case ConstDefine.DSP_CHANNEL_CM+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_CM+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_CM+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_CM+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
+                return mPrefCm;
+            }
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE:
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
+                return mPrefCmNative;
+            }
             default:
-                assert false;
+                MLog.e(TAG, "not found channel prefs " + channel);
                 break;
         }
         return null;
@@ -72,18 +121,53 @@ public class AdsPreferences {
 
     private Editor getEditor(int channel) {
         switch (channel) {
-            case -1:
+            case ConstDefine.DSP_GLOABL: {
                 return mEditorGloabl;
-            case 1:
+            }
+            case ConstDefine.DSP_CHANNEL_FACEBOOK:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
                 return mEditorFacebook;
-            case 2:
+            }
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
+                return mEditorFacebookNative;
+            }
+            case ConstDefine.DSP_CHANNEL_ADMOB:
+            case ConstDefine.DSP_CHANNEL_ADMOB+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_ADMOB+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_ADMOB+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_ADMOB+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
                 return mEditorAdmob;
-            case 3:
+            }
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE:
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_ADMOB_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
+                return mEditorAdmobNative;
+            }
+            case ConstDefine.DSP_CHANNEL_CM:
+            case ConstDefine.DSP_CHANNEL_CM+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_CM+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_CM+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_CM+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
                 return mEditorCm;
-            case 11:
-                return getmEditorFacebookNative;
+            }
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE:
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER:
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT:
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK:
+            case ConstDefine.DSP_CHANNEL_CM_NATIVE+ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK: {
+                return mEditorCmNative;
+            }
             default:
-                assert false;
+                MLog.e(TAG, "not found channel editor " + channel);
                 break;
         }
         return null;

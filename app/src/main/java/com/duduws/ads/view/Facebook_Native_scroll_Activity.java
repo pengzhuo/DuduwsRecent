@@ -38,6 +38,7 @@ public class Facebook_Native_scroll_Activity extends BaseActivity implements Nat
     private static long timeDelay = 0;
     private int triggerType = -1;
     private boolean isOutSide = false;
+    private int offset = 0;
 
     private NativeAd nativeAd;
     private AdChoicesView adChoicesView;
@@ -59,6 +60,8 @@ public class Facebook_Native_scroll_Activity extends BaseActivity implements Nat
         }
 
         timeDelay = System.currentTimeMillis();
+
+        offset = DspHelper.getTriggerOffSet(triggerType);
 
         manager = new NativeAdsManager(this, ConfigDefine.SDK_KEY_FACEBOOK_NATIVE, ConstDefine.PRE_LOADING_ADS_NUM);
         manager.setListener(this);

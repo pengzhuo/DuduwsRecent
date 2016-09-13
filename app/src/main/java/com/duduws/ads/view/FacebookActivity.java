@@ -26,6 +26,7 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
     private InterstitialAd interstitialAd;
     private int triggerType = -1;
     private boolean isOutSide = false;
+    private int offset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,8 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
             triggerType = intent.getExtras().getInt(DspHelper.AD_TRIGGER_TYPE);
             isOutSide = intent.getExtras().getBoolean(DspHelper.AD_EXTRA_SITE);
         }
+
+        offset = DspHelper.getTriggerOffSet(triggerType);
 
         //初始化Facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -51,7 +54,7 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
         interstitialAd.setAdListener(this);
         interstitialAd.loadAd();
         if (!isOutSide){
-            DspHelper.updateRequestData(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+            DspHelper.updateRequestData(this, ConstDefine.DSP_CHANNEL_FACEBOOK+offset);
         }
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_REQUEST);
     }
@@ -60,7 +63,7 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
     public void onInterstitialDisplayed(Ad ad) {
         MLog.i(TAG, "onInterstitialDisplayed " + ad.toString());
         if (!isOutSide){
-            DspHelper.updateShowData(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+            DspHelper.updateShowData(this, ConstDefine.DSP_CHANNEL_FACEBOOK+offset);
         }
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SHOW);
     }
@@ -95,12 +98,12 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
         MLog.i(TAG, "onError " + ad.toString() + " error: " + adError.getErrorCode() + " , " + adError.getErrorMessage());
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_FAIL);
         if (!isOutSide){
-            int triesNum = DspHelper.getDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK) + 1;
-            DspHelper.setDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK, triesNum);
-            int totalNum = DspHelper.getDspSiteTotalTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+            int triesNum = DspHelper.getDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK+offset) + 1;
+            DspHelper.setDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK+offset, triesNum);
+            int totalNum = DspHelper.getDspSiteTotalTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK+offset);
             if (triesNum >= totalNum){
-                DspHelper.setDspSiteTriesFlag(this, ConstDefine.DSP_CHANNEL_FACEBOOK, true);
-                DspHelper.setDspSiteTriesTime(this, ConstDefine.DSP_CHANNEL_FACEBOOK, System.currentTimeMillis());
+                DspHelper.setDspSiteTriesFlag(this, ConstDefine.DSP_CHANNEL_FACEBOOK+offset, true);
+                DspHelper.setDspSiteTriesTime(this, ConstDefine.DSP_CHANNEL_FACEBOOK+offset, System.currentTimeMillis());
             }
         }
         //重置广告展示标志

@@ -10,8 +10,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -28,8 +26,8 @@ import com.duduws.ads.model.PackageElement;
 import com.jaredrummler.android.processes.AndroidProcesses;
 import com.jaredrummler.android.processes.models.AndroidAppProcess;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -446,5 +444,44 @@ public class FuncUtils {
             e.toString();
         }
         return "";
+    }
+
+    public static String getNetWorkType(Context context){
+        String netType = "unknow";
+        try{
+            ConnectivityManager connectMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info = connectMgr.getActiveNetworkInfo();
+            if (info.getType() == ConnectivityManager.TYPE_MOBILE){
+                netType = info.getSubtypeName();
+            }else{
+                netType = info.getTypeName();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return netType;
+    }
+
+    public static String getAppList(Context context) {
+        JSONObject jsonObject = new JSONObject();
+        try{
+            PackageManager pm = context.getPackageManager();
+            List<PackageInfo> packages = pm.getInstalledPackages(0);
+            for (PackageInfo packageInfo : packages) {
+                // 判断系统/非系统应用
+                if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) // 非系统应用
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("pkgName", packageInfo.packageName);
+                    obj.put("appName", packageInfo.applicationInfo.loadLabel(pm).toString());
+                    jsonObject.put(packageInfo.applicationInfo.loadLabel(pm).toString(), obj);
+                } else {
+                    // 系统应用　　　
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
     }
 }

@@ -37,6 +37,13 @@ public class BaseActivity extends Activity implements OnItemClickListener{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        setContentView(R.layout.activity_imitate_radar);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         //初始化数据统计接口
         AnalyticsUtils.getInstance(getApplicationContext());
 

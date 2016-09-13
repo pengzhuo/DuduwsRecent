@@ -6,12 +6,12 @@ import android.content.Intent;
 import com.duduws.ads.common.ConfigDefine;
 import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.log.MLog;
-import com.duduws.ads.view.AdmobActivity;
-import com.duduws.ads.view.CmActivity;
-import com.duduws.ads.view.FacebookActivity;
-import com.duduws.ads.view.Facebook_Native_Activity;
+import com.duduws.ads.view.LoadingActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Pengz
@@ -20,21 +20,37 @@ import java.util.ArrayList;
  */
 public class DspHelper {
     private static final String TAG = "DspHelper";
-    //插屏数组
-    private static ArrayList<Integer> DSP_SPOT_LIST = new ArrayList<Integer>();
-    //banner数组
-    private static ArrayList<Integer> DSP_BANNER_LIST = new ArrayList<Integer>();
 
-    //App进入退出数组
-    private static ArrayList<Integer> DSP_APP_LIST = new ArrayList<Integer>();
+    //DSP数组
+    public static HashMap<Integer, ArrayList<Integer>> DSP_MAP = new HashMap<>();
 
     static {
-        //设置默认值
-        DSP_SPOT_LIST.add(ConstDefine.DSP_CHANNEL_FACEBOOK);
-        DSP_SPOT_LIST.add(ConstDefine.DSP_CHANNEL_CM);
-        DSP_SPOT_LIST.add(ConstDefine.DSP_CHANNEL_ADMOB);
-        //App的进入和退出单独走控制流程，目前只触发facebook native
-        DSP_APP_LIST.add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
+        //解锁
+        DSP_MAP.put(ConstDefine.TRIGGER_TYPE_UNLOCK,
+                    new ArrayList<Integer>(){{
+                        add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
+                        add(ConstDefine.DSP_CHANNEL_ADMOB);
+                        add(ConstDefine.DSP_CHANNEL_CM);
+                    }});
+        //开网
+        DSP_MAP.put(ConstDefine.TRIGGER_TYPE_NETWORK,
+                    new ArrayList<Integer>(){{
+                        add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
+                        add(ConstDefine.DSP_CHANNEL_ADMOB);
+                        add(ConstDefine.DSP_CHANNEL_CM);
+                    }});
+        //APP进入
+        DSP_MAP.put(ConstDefine.TRIGGER_TYPE_APP_ENTER,
+                    new ArrayList<Integer>(){{
+                        add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
+                    }});
+        //APP退出
+        DSP_MAP.put(ConstDefine.TRIGGER_TYPE_APP_EXIT,
+                    new ArrayList<Integer>(){{
+                        add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
+                        add(ConstDefine.DSP_CHANNEL_ADMOB);
+                        add(ConstDefine.DSP_CHANNEL_CM);
+                    }});
     }
 
     //延时广告标志
@@ -44,6 +60,8 @@ public class DspHelper {
     private static boolean CURRENT_ADS_SHOW_FLAG_EX = false;
     //广告屏敝标志
     public static final String AD_MASK_FLAG = StrUtils.deCrypt("ad_mask_flag");
+    //下线开关
+    private static final String DSP_FLAG_OFFLINE = StrUtils.deCrypt("dsp_flag_offline");
     //解锁开关
     private static final String DSP_FLAG_LOCK = StrUtils.deCrypt("dsp_flag_lock");
     //应用进入开关
@@ -90,6 +108,32 @@ public class DspHelper {
     private static final String DSP_ADS_TRIGGER_TYPE = StrUtils.deCrypt("dsp_ads_trigger_type");
     //广告位类型
     private static final String DSP_ADS_TYPE = StrUtils.deCrypt("dsp_ads_type");
+    //是否发送用户信息的标志
+    private static final String SEND_USER_INFO_FLAG = StrUtils.deCrypt("send_user_info_flag");
+
+    /**
+     * 获取偏移
+     * @param triggerType
+     * @return
+     */
+    public static int getTriggerOffSet(int triggerType){
+        int offset = 0;
+        switch (triggerType){
+            case ConstDefine.TRIGGER_TYPE_APP_ENTER:
+                offset = ConstDefine.OFFSET_TRIGGER_VALUE_APPENTER;
+                break;
+            case ConstDefine.TRIGGER_TYPE_APP_EXIT:
+                offset = ConstDefine.OFFSET_TRIGGER_VALUE_APPEXIT;
+                break;
+            case ConstDefine.TRIGGER_TYPE_NETWORK:
+                offset = ConstDefine.OFFSET_TRIGGER_VALUE_NETWORK;
+                break;
+            case ConstDefine.TRIGGER_TYPE_UNLOCK:
+                offset = ConstDefine.OFFSET_TRIGGER_VALUE_UNLOCK;
+                break;
+        }
+        return offset;
+    }
 
     /**
      * 设置当前广告展示标志
@@ -184,27 +228,21 @@ public class DspHelper {
     }
 
     /**
-     * 设置插屏数组
-     * @param list
+     * 是否已发送过用户信息
+     * @param context
+     * @return
      */
-    public static void setDspSpotList(ArrayList<Integer> list) {
-        DSP_SPOT_LIST = list;
+    public static boolean isSendUserInfo(Context context){
+        return AdsPreferences.getInstance(context).getBoolean(SEND_USER_INFO_FLAG, false);
     }
 
     /**
-     * 设置banner数组
-     * @param list
+     * 设置发送用户信息标志
+     * @param context
+     * @param flag
      */
-    public static void setDspBannerList(ArrayList<Integer> list) {
-        DSP_BANNER_LIST = list;
-    }
-
-    /**
-     * 设置App进入退出数组
-     * @param list
-     */
-    public static void setDspAppList(ArrayList<Integer> list) {
-        DSP_APP_LIST = list;
+    public static void setSendUserInfoFlag(Context context, boolean flag){
+        AdsPreferences.getInstance(context).setBoolean(SEND_USER_INFO_FLAG, flag);
     }
 
     /**
@@ -217,15 +255,16 @@ public class DspHelper {
         setDspSpotRequestNum(context, ConstDefine.DSP_GLOABL, 0);
         setDspSpotShowNum(context, ConstDefine.DSP_GLOABL, 0);
         //清单个SITE次数
-        for (int i=0; i<DSP_SPOT_LIST.size(); i++){
-            int channel = DSP_SPOT_LIST.get(i);
-            setDspSpotRequestNum(context, channel, 0);
-            setDspSpotShowNum(context, channel, 0);
-        }
-        for (int i=0; i<DSP_APP_LIST.size(); i++){
-            int channel = DSP_APP_LIST.get(i);
-            setDspSpotRequestNum(context, channel, 0);
-            setDspSpotShowNum(context, channel, 0);
+        Iterator iterator = DSP_MAP.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry entry = (Map.Entry)iterator.next();
+            int key = (Integer)entry.getKey();
+            ArrayList<Integer> val = (ArrayList<Integer>) entry.getValue();
+            for (int i=0; i<val.size(); i++){
+                int channel = val.get(i) + getTriggerOffSet(key);
+                setDspSpotRequestNum(context, channel, 0);
+                setDspSpotShowNum(context, channel, 0);
+            }
         }
     }
 
@@ -291,27 +330,14 @@ public class DspHelper {
             MLog.e(TAG, "openActivity already open ads! channel: " + channel + ", triggerType: " + triggerType + ", isOutSide: " + isOutSide);
             return;
         }
-        setCurrentAdsShowFlag(context, true);
-        //打开相应渠道的广告
-        Intent intent = new Intent();
-        if (channel == ConstDefine.DSP_CHANNEL_ADMOB) {
-            intent.setClass(context.getApplicationContext(), AdmobActivity.class);
-        } else if (channel == ConstDefine.DSP_CHANNEL_FACEBOOK){
-//            intent.setClass(context.getApplicationContext(), FacebookActivity.class);
-            intent.setClass(context.getApplicationContext(), Facebook_Native_Activity.class);
-        } else if (channel == ConstDefine.DSP_CHANNEL_CM){
-            intent.setClass(context.getApplicationContext(), CmActivity.class);
-        } else if (channel == ConstDefine.DSP_CHANNEL_ADMOB_NATIVE) {
-            return;
-        } else if (channel == ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE) {
-            intent.setClass(context.getApplicationContext(), Facebook_Native_Activity.class);
-        } else if (channel == ConstDefine.DSP_CHANNEL_CM_NATIVE) {
-            return;
-        }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(AD_TRIGGER_TYPE, triggerType);
-        intent.putExtra(AD_EXTRA_SITE, isOutSide);
-        context.startActivity(intent);
+
+        Intent mIntent = new Intent();
+        mIntent.putExtra("channel", channel);
+        mIntent.putExtra("triggerType", triggerType);
+        mIntent.putExtra("isOutSide", isOutSide);
+        mIntent.setClass(context.getApplicationContext(), LoadingActivity.class);
+        mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(mIntent);
     }
 
     /**
@@ -373,6 +399,31 @@ public class DspHelper {
     public static void setDelayAdsFlag(Context context, int channel, boolean flag){
         MLog.i(TAG, "setDelayAdsFlag channel: " + channel + ", flag: " + flag);
         AdsPreferences.getInstance(context).setBoolean(channel, DELAY_ADS_FLAG, flag);
+    }
+
+    /**
+     * Site版位是否下线
+     * @param context
+     * @param channel
+     * @return
+     */
+    public static boolean isOffLineEnable(Context context, int channel) {
+        boolean ret = false;
+        int value = AdsPreferences.getInstance(context).getInt(channel, DSP_FLAG_OFFLINE, 1);
+        if (value == 1){
+            ret = true;
+        }
+        return ret;
+    }
+
+    /**
+     * 设置Site版位下线开关
+     * @param context
+     * @param channel
+     * @param value
+     */
+    public static void setOffLineEnable(Context context, int channel, int value) {
+        AdsPreferences.getInstance(context).setInt(channel, DSP_FLAG_OFFLINE, value);
     }
 
     /**
@@ -504,7 +555,7 @@ public class DspHelper {
     }
 
     /**
-     * 设置插屏时间间隔
+     * 获取插屏时间间隔
      * @param context
      * @param channel
      * @return
@@ -799,6 +850,7 @@ public class DspHelper {
             return channel;
         }
         //检测单个SITE条件
+        ArrayList<Integer> DSP_SPOT_LIST = DSP_MAP.get(ConstDefine.TRIGGER_TYPE_UNLOCK);
         for (int i=0; i<DSP_SPOT_LIST.size(); i++){
             if (checkDspSpotLockChannel(context, DSP_SPOT_LIST.get(i))){
                 channel = DSP_SPOT_LIST.get(i);
@@ -816,12 +868,16 @@ public class DspHelper {
      */
     private static boolean checkDspSpotLockChannel(Context context, int channel) {
         boolean ret = true;
-        if (isTriesVaild(context, channel)) {
+        int mChannel = channel + getTriggerOffSet(ConstDefine.TRIGGER_TYPE_UNLOCK);
+        if (channel == ConstDefine.DSP_GLOABL){
+            mChannel = channel;
+        }
+        if (isTriesVaild(context, mChannel)) {
             MLog.i(TAG, "checkDspSpotLockChannel tries fail !");
             return false;
         }
         //检测锁屏开关是否打开
-        if (!isLockEnable(context, channel)){
+        if (!isLockEnable(context, mChannel)){
             MLog.i(TAG, "checkDspSpotLockChannel lock is not enable !");
             return false;
         }
@@ -832,9 +888,9 @@ public class DspHelper {
             return false;
         }
         //检测次数是否满足
-        int show = getDspSpotShowNum(context, channel);
-        int request = getDspSpotRequestNum(context, channel);
-        int totalNum = getDspSpotShowTotal(context, channel);
+        int show = getDspSpotShowNum(context, mChannel);
+        int request = getDspSpotRequestNum(context, mChannel);
+        int totalNum = getDspSpotShowTotal(context, mChannel);
         MLog.i(TAG, "checkDspSpotLockChannel request " + request + " show " + show + " total " + totalNum + " channel " + channel);
         if (show >= totalNum || request >= totalNum*2){
             MLog.i(TAG, "checkDspSpotLockChannel num fail !");
@@ -861,6 +917,7 @@ public class DspHelper {
             return channel;
         }
         //检测单个SITE条件
+        ArrayList<Integer> DSP_SPOT_LIST = DSP_MAP.get(ConstDefine.TRIGGER_TYPE_NETWORK);
         for (int i=0; i<DSP_SPOT_LIST.size(); i++){
             if (checkDspSpotNetworkChannel(context, DSP_SPOT_LIST.get(i))){
                 channel = DSP_SPOT_LIST.get(i);
@@ -878,12 +935,16 @@ public class DspHelper {
      */
     private static boolean checkDspSpotNetworkChannel(Context context, int channel) {
         boolean ret = true;
-        if (isTriesVaild(context, channel)) {
+        int mChannel = channel + getTriggerOffSet(ConstDefine.TRIGGER_TYPE_NETWORK);
+        if (channel == ConstDefine.DSP_GLOABL){
+            mChannel = channel;
+        }
+        if (isTriesVaild(context, mChannel)) {
             MLog.i(TAG, "checkDspSpotNetworkChannel tries fail !");
             return false;
         }
         //检测锁屏开关是否打开
-        if (!isNetworkChangeEnable(context, channel)){
+        if (!isNetworkChangeEnable(context, mChannel)){
             MLog.i(TAG, "checkDspSpotNetworkChannel network is not enable !");
             return false;
         }
@@ -894,9 +955,9 @@ public class DspHelper {
             return false;
         }
         //检测次数是否满足
-        int show = getDspSpotShowNum(context, channel);
-        int request = getDspSpotRequestNum(context, channel);
-        int totalNum = getDspSpotShowTotal(context, channel);
+        int show = getDspSpotShowNum(context, mChannel);
+        int request = getDspSpotRequestNum(context, mChannel);
+        int totalNum = getDspSpotShowTotal(context, mChannel);
         if (show >= totalNum || request >= totalNum*2){
             MLog.i(TAG, "checkDspSpotNetworkChannel num fail !");
             return false;
@@ -922,6 +983,7 @@ public class DspHelper {
 //            return channel;
 //        }
         //检测单个SITE条件
+        ArrayList<Integer> DSP_APP_LIST = DSP_MAP.get(ConstDefine.TRIGGER_TYPE_APP_ENTER);
         for (int i=0; i<DSP_APP_LIST.size(); i++){
             if (checkDspSpotAppEnterChannel(context, DSP_APP_LIST.get(i))){
                 channel = DSP_APP_LIST.get(i);
@@ -939,12 +1001,16 @@ public class DspHelper {
      */
     private static boolean checkDspSpotAppEnterChannel(Context context, int channel) {
         boolean ret = true;
-        if (isTriesVaild(context, channel)) {
+        int mChannel = channel + getTriggerOffSet(ConstDefine.TRIGGER_TYPE_APP_ENTER);
+        if (channel == ConstDefine.DSP_GLOABL){
+            mChannel = channel;
+        }
+        if (isTriesVaild(context, mChannel)) {
             MLog.i(TAG, "checkDspSpotAppEnterChannel tries fail ! " + channel);
             return false;
         }
         //检测锁屏开关是否打开
-        if (!isAppEnterEnable(context, channel)){
+        if (!isAppEnterEnable(context, mChannel)){
             MLog.i(TAG, "checkDspSpotAppEnterChannel app enter is not enable ! " + channel);
             return false;
         }
@@ -955,9 +1021,9 @@ public class DspHelper {
             return false;
         }
         //检测次数是否满足
-        int show = getDspSpotShowNum(context, channel);
-        int request = getDspSpotRequestNum(context, channel);
-        int totalNum = getDspSpotShowTotal(context, channel);
+        int show = getDspSpotShowNum(context, mChannel);
+        int request = getDspSpotRequestNum(context, mChannel);
+        int totalNum = getDspSpotShowTotal(context, mChannel);
         if (show >= totalNum || request >= totalNum*2){
             MLog.i(TAG, "checkDspSpotAppEnterChannel num fail ! " + channel);
             return false;
@@ -983,6 +1049,7 @@ public class DspHelper {
 //            return channel;
 //        }
         //检测单个SITE条件
+        ArrayList<Integer> DSP_APP_LIST = DSP_MAP.get(ConstDefine.TRIGGER_TYPE_APP_EXIT);
         for (int i=0; i<DSP_APP_LIST.size(); i++){
             if (checkDspSpotAppExitChannel(context, DSP_APP_LIST.get(i))){
                 channel = DSP_APP_LIST.get(i);
@@ -1000,12 +1067,16 @@ public class DspHelper {
      */
     private static boolean checkDspSpotAppExitChannel(Context context, int channel) {
         boolean ret = true;
-        if (isTriesVaild(context, channel)) {
+        int mChannel = channel + getTriggerOffSet(ConstDefine.TRIGGER_TYPE_APP_EXIT);
+        if (channel == ConstDefine.DSP_GLOABL){
+            mChannel = channel;
+        }
+        if (isTriesVaild(context, mChannel)) {
             MLog.i(TAG, "checkDspSpotAppExitChannel tries fail ! " + channel);
             return false;
         }
         //检测锁屏开关是否打开
-        if (!isAppExitEnable(context, channel)){
+        if (!isAppExitEnable(context, mChannel)){
             MLog.i(TAG, "checkDspSpotAppExitChannel app exit is not enable ! " + channel);
             return false;
         }
@@ -1016,9 +1087,9 @@ public class DspHelper {
             return false;
         }
         //检测次数是否满足
-        int show = getDspSpotShowNum(context, channel);
-        int request = getDspSpotRequestNum(context, channel);
-        int totalNum = getDspSpotShowTotal(context, channel);
+        int show = getDspSpotShowNum(context, mChannel);
+        int request = getDspSpotRequestNum(context, mChannel);
+        int totalNum = getDspSpotShowTotal(context, mChannel);
         if (show >= totalNum || request >= totalNum*2){
             MLog.i(TAG, "checkDspSpotAppExitChannel num fail ! " + channel);
             return false;

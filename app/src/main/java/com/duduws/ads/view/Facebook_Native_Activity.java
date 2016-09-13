@@ -42,6 +42,7 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
     private static long timeDelay = 0;
     private int triggerType = -1;
     private boolean isOutSide = false;
+    private int offset = 0;
 
     private NativeAd nativeAd;
     private AdChoicesView adChoicesView;
@@ -68,6 +69,8 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
 
         timeDelay = System.currentTimeMillis();
 
+        offset = DspHelper.getTriggerOffSet(triggerType);
+
         //加载原生广告
         nativeAd = new NativeAd(this, ConfigDefine.SDK_KEY_FACEBOOK_NATIVE);
         nativeAd.setAdListener(this);
@@ -80,12 +83,12 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
     public void onError(Ad ad, AdError adError) {
         MLog.e(TAG, "facebook native ad error! code: " + adError.getErrorCode() + ", message: " + adError.getErrorMessage());
         if (!isOutSide){
-            int triesNum = DspHelper.getDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE) + 1;
-            DspHelper.setDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE, triesNum);
-            int totalNum = DspHelper.getDspSiteTotalTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
+            int triesNum = DspHelper.getDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+offset) + 1;
+            DspHelper.setDspSiteTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+offset, triesNum);
+            int totalNum = DspHelper.getDspSiteTotalTriesNum(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+offset);
             if (triesNum >= totalNum){
-                DspHelper.setDspSiteTriesFlag(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE, true);
-                DspHelper.setDspSiteTriesTime(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE, System.currentTimeMillis());
+                DspHelper.setDspSiteTriesFlag(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+offset, true);
+                DspHelper.setDspSiteTriesTime(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+offset, System.currentTimeMillis());
             }
         }
         //重置广告展示标志
@@ -117,8 +120,8 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
         nativeAd.unregisterView();
         inflateAd(nativeAd, adView);
         if (!isOutSide){
-            DspHelper.updateRequestData(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
-            DspHelper.updateShowData(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
+            DspHelper.updateRequestData(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+offset);
+            DspHelper.updateShowData(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+offset);
         }
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE, triggerType, ConstDefine.AD_TYPE_NATIVE_SPOT, ConstDefine.AD_RESULT_SHOW);
     }

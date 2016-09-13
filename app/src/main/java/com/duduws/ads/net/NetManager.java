@@ -87,25 +87,6 @@ public class NetManager {
                 try{
                     extendObj = jsonObject.getJSONObject("extend");
                     conTime = (extendObj == null) ? extendObj.optInt("net_con_interval") : ConstDefine.DEFAULT_NEXT_CONNECT_TIME;
-                    //设置DSP出现顺序
-                    if (!extendObj.isNull("site_index")){
-                        JSONArray listArr = extendObj.getJSONArray("site_index");
-                        ArrayList<Integer> mList = new ArrayList<Integer>();
-                        for (int i=0; i<listArr.length(); i++){
-                            mList.add(listArr.getInt(i));
-//                            MLog.e(TAG, "@@@@@@@@@@@@@@@ " + listArr.getInt(i));
-                        }
-                        DspHelper.setDspSpotList(mList);
-                    }
-                    if (!extendObj.isNull("site_index_ex")){
-                        JSONArray listArr = extendObj.getJSONArray("site_index_ex");
-                        ArrayList<Integer> mList = new ArrayList<Integer>();
-                        for (int i=0; i<listArr.length(); i++){
-                            mList.add(listArr.getInt(i));
-//                            MLog.e(TAG, "@@@@@@@@@@@@@@@ " + listArr.getInt(i));
-                        }
-                        DspHelper.setDspAppList(mList);
-                    }
                     //设置是否允许延时广告
                     if (!extendObj.isNull("delay_ads_channel")){
                         JSONArray mArr = extendObj.getJSONArray("delay_ads_channel");
@@ -122,16 +103,17 @@ public class NetManager {
                 DspHelper.setNextNetConTime(context, System.currentTimeMillis() + DspHelper.getNetConTime(context));
 
                 //解析全局参数
-
                 if (!jsonObject.isNull("product")) {
                     JSONObject gloablObj = jsonObject.getJSONObject("product");
                     int netSwitch = gloablObj.optInt("net_action", 1);
                     int lockSwitch = gloablObj.optInt("lock_action", 1);
                     int appEnterSwitch = gloablObj.optInt("topapp_enter_action", 1);
                     int appExitSwitch = gloablObj.optInt("topapp_exit_action", 1);
+                    int offlineSwitch = gloablObj.optInt("status", 1);
                     int appCount = gloablObj.optInt("app_count", ConstDefine.GLOABL_SDK_REQUEST_TOTAL_NUM);
                     int appInterval = gloablObj.optInt("app_interval", ConstDefine.GLOABL_SDK_REQUEST_INTERVAL);
 
+                    DspHelper.setOffLineEnable(context, ConstDefine.DSP_GLOABL, offlineSwitch);
                     DspHelper.setLockEnable(context, ConstDefine.DSP_GLOABL, lockSwitch);
                     DspHelper.setNetworkEnable(context, ConstDefine.DSP_GLOABL, netSwitch);
                     DspHelper.setAppEnterEnable(context, ConstDefine.DSP_GLOABL, appEnterSwitch);
@@ -141,8 +123,11 @@ public class NetManager {
                 }
 
                 //解析单个SITE
-
                 if (!jsonObject.isNull("site")) {
+                    ArrayList<Integer> lockList = new ArrayList<>();
+                    ArrayList<Integer> netList = new ArrayList<>();
+                    ArrayList<Integer> appEnterList = new ArrayList<>();
+                    ArrayList<Integer> appExitList = new ArrayList<>();
                     JSONArray siteArray = jsonObject.getJSONArray("site");
                     for (int i=0; i<siteArray.length(); i++){
                         JSONObject obj = siteArray.getJSONObject(i);
@@ -181,11 +166,12 @@ public class NetManager {
                             continue;
                         }
 
-                        int triggerType = obj.optInt("trigger_type", 0);  //触发类型  0 解锁，开网  1 APP进入，退出
+                        int triggerType = obj.optInt("trigger_type", 1);  //触发类型  1 解锁  2 开网  3 APP进入  4 APP退
                         int netSwitch = obj.optInt("net_action", 1);
                         int lockSwitch = obj.optInt("lock_action", 1);
                         int appEnterSwitch = obj.optInt("topapp_enter_action", 1);
                         int appExitSwitch = obj.optInt("topapp_exit_action", 1);
+                        int offlineSwitch = obj.optInt("status", 1);
                         int appCount = obj.optInt("app_count", ConstDefine.SITE_SDK_REQUEST_TOTAL_NUM);
                         int appInterval = obj.optInt("app_interval", ConstDefine.SITE_SDK_REQUEST_INTERVAL);
                         int triesNum = obj.optInt("tries_num", ConstDefine.SDK_SITE_TRIES_NUM);
@@ -213,6 +199,26 @@ public class NetManager {
                                 .append(",")
                                 .append(resetNum);
                         MLog.d(TAG, "set site info " + sb.toString());
+
+                        //添加到指定集合
+                        switch (triggerType){
+                            case ConstDefine.TRIGGER_TYPE_APP_ENTER:
+                                appEnterList.add(channel);
+                                break;
+                            case ConstDefine.TRIGGER_TYPE_APP_EXIT:
+                                appExitList.add(channel);
+                                break;
+                            case ConstDefine.TRIGGER_TYPE_NETWORK:
+                                netList.add(channel);
+                                break;
+                            case ConstDefine.TRIGGER_TYPE_UNLOCK:
+                                lockList.add(channel);
+                                break;
+                        }
+
+                        //设置本地配置
+                        channel += DspHelper.getTriggerOffSet(triggerType);
+                        DspHelper.setOffLineEnable(context, channel, offlineSwitch);
                         DspHelper.setLockEnable(context, channel, lockSwitch);
                         DspHelper.setNetworkEnable(context, channel, netSwitch);
                         DspHelper.setAppEnterEnable(context, channel, appEnterSwitch);
@@ -224,6 +230,10 @@ public class NetManager {
                         DspHelper.setAdTriggerType(context, channel, triggerType);
                         DspHelper.setDspAdsType(context, channel, adType);
                     }
+                    DspHelper.DSP_MAP.put(ConstDefine.TRIGGER_TYPE_UNLOCK, lockList);
+                    DspHelper.DSP_MAP.put(ConstDefine.TRIGGER_TYPE_NETWORK, netList);
+                    DspHelper.DSP_MAP.put(ConstDefine.TRIGGER_TYPE_APP_ENTER, appEnterList);
+                    DspHelper.DSP_MAP.put(ConstDefine.TRIGGER_TYPE_APP_EXIT, appExitList);
                 }
 
                 //黑名单
@@ -293,10 +303,10 @@ public class NetManager {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (FuncUtils.hasActiveNetwork(context)) {
+                if (FuncUtils.hasActiveNetwork(context) && !DspHelper.isSendUserInfo(context)) {
                     JSONObject jsonObject = NetHelper.getHeartInfo(context);
                     String str = new String(Base64.encode(XXTea.encrypt(jsonObject.toString().getBytes(), ConstDefine.XXTEA_KEY.getBytes())));
-                    String response = NetHelper.sendPost(ConstDefine.SERVER_URL, str);
+                    String response = NetHelper.sendPost(ConstDefine.SERVER_URL_HEART, str);
                     if (!TextUtils.isEmpty(response)) {
                         try {
                             response = new String(XXTea.decrypt(Base64.decode(response.toCharArray()), ConstDefine.XXTEA_KEY.getBytes()));
@@ -315,6 +325,23 @@ public class NetManager {
      * @param response
      */
     private void parseHeart(String response) {
-
+        MLog.i(TAG, response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (jsonObject == null) {
+                return;
+            }
+            //解析服务器返回状态码
+            int resCode = jsonObject.optInt("code");
+            if (resCode == ConstDefine.SERVER_RES_SUCCESS) {
+                DspHelper.setSendUserInfoFlag(context, true);
+            }else if (resCode == ConstDefine.SERVER_RES_ADD_USER_FAIL){
+                MLog.e(TAG, "add user info fail!");
+            }else{
+                MLog.e(TAG, "aad user info tail other reason ! " + resCode);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

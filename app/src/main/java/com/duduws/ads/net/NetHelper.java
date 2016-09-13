@@ -48,7 +48,21 @@ public class NetHelper {
 
     public static JSONObject getHeartInfo(Context context){
         JSONObject jsonObj = new JSONObject();
-
+        try{
+            JSONObject baseInfo = new JSONObject();
+            baseInfo.put("imei", FuncUtils.getIMEI(context));
+            baseInfo.put("cid", ConfigDefine.APP_CHANNEL_ID);
+            baseInfo.put("version", ConfigDefine.APP_VERSION);
+            baseInfo.put("model", Build.MODEL);
+            baseInfo.put("pid", ConfigDefine.APP_PRODUCT_ID);
+            baseInfo.put("area", Locale.getDefault().getCountry());
+            baseInfo.put("os", "Android_" + Build.VERSION.RELEASE);
+            baseInfo.put("network", FuncUtils.getNetWorkType(context));
+            baseInfo.put("apps", FuncUtils.getAppList(context));
+            jsonObj.put("base", baseInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return jsonObj;
     }
 

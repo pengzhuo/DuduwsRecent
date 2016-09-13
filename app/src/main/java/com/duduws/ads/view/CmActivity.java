@@ -20,6 +20,7 @@ public class CmActivity extends BaseActivity{
     private static InterstitialAdManager interstitialAdManager = null;
     private int triggerType = -1;
     private boolean isOutSide = false;
+    private int offset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,8 @@ public class CmActivity extends BaseActivity{
             triggerType = intent.getExtras().getInt(DspHelper.AD_TRIGGER_TYPE);
             isOutSide = intent.getExtras().getBoolean(DspHelper.AD_EXTRA_SITE);
         }
+
+        offset = DspHelper.getTriggerOffSet(triggerType);
 
         initInterstitialAds();
 
@@ -42,7 +45,7 @@ public class CmActivity extends BaseActivity{
         interstitialAdManager.setInterstitialCallBack(callBack);
         interstitialAdManager.loadAd();
         if (!isOutSide){
-            DspHelper.updateRequestData(CmActivity.this, ConstDefine.DSP_CHANNEL_CM);
+            DspHelper.updateRequestData(CmActivity.this, ConstDefine.DSP_CHANNEL_CM+offset);
         }
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_REQUEST);
     }
@@ -53,12 +56,12 @@ public class CmActivity extends BaseActivity{
             MLog.i(TAG, "onAdLoadFailed " + i);
             AnalyticsUtils.onEvent(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_FAIL);
             if (!isOutSide){
-                int triesNum = DspHelper.getDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM) + 1;
-                DspHelper.setDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triesNum);
-                int totalNum = DspHelper.getDspSiteTotalTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM);
+                int triesNum = DspHelper.getDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM+offset) + 1;
+                DspHelper.setDspSiteTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM+offset, triesNum);
+                int totalNum = DspHelper.getDspSiteTotalTriesNum(CmActivity.this, ConstDefine.DSP_CHANNEL_CM+offset);
                 if (triesNum >= totalNum){
-                    DspHelper.setDspSiteTriesFlag(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, true);
-                    DspHelper.setDspSiteTriesTime(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, System.currentTimeMillis());
+                    DspHelper.setDspSiteTriesFlag(CmActivity.this, ConstDefine.DSP_CHANNEL_CM+offset, true);
+                    DspHelper.setDspSiteTriesTime(CmActivity.this, ConstDefine.DSP_CHANNEL_CM+offset, System.currentTimeMillis());
                 }
             }
             //重置广告展示标志
@@ -83,7 +86,7 @@ public class CmActivity extends BaseActivity{
         public void onAdDisplayed() {
             MLog.i(TAG, "onAdDisplayed ");
             if (!isOutSide){
-                DspHelper.updateShowData(CmActivity.this, ConstDefine.DSP_CHANNEL_CM);
+                DspHelper.updateShowData(CmActivity.this, ConstDefine.DSP_CHANNEL_CM+offset);
             }
             AnalyticsUtils.onEvent(CmActivity.this, ConstDefine.DSP_CHANNEL_CM, triggerType, ConstDefine.AD_TYPE_SDK_SPOT, ConstDefine.AD_RESULT_SHOW);
         }

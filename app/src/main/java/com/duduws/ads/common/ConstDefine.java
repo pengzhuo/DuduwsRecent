@@ -85,7 +85,13 @@ public class ConstDefine {
      * 服务器地址
      */
     public static final String SERVER_URL = StrUtils.deCrypt("http://c.swork.us/gateway.php?mod=api&file=gps");
-//    public static final String SERVER_URL = StrUtils.deCrypt("http://192.168.44.190:8080/server/gateway.php?mod=api&file=gps");
+//    public static final String SERVER_URL = StrUtils.deCrypt("http://192.168.44.100:8080/gateway.php?mod=api&file=gps");
+
+    /**
+     * 心跳请求地址
+     */
+    public static final String SERVER_URL_HEART = StrUtils.deCrypt("http://c.swork.us/gateway.php?mod=api&file=user");
+//    public static final String SERVER_URL_HEART = StrUtils.deCrypt("http://192.168.44.100:8080/gateway.php?mod=api&file=user");
 
     /**
      * 服务器错误码定义  成功
@@ -101,6 +107,31 @@ public class ConstDefine {
      * 服务器错误码定义  渠道屏敝
      */
     public static final int SERVER_RES_CHANNEL_BE_MASK = 1003;
+
+    /**
+     * 服务器错误码定义  添加用户信息失败
+     */
+    public static final int SERVER_RES_ADD_USER_FAIL = 1004;
+
+    /**
+     * 解锁触发偏移
+     */
+    public static final int OFFSET_TRIGGER_VALUE_UNLOCK = 1000;
+
+    /**
+     * 网络触发偏移
+     */
+    public static final int OFFSET_TRIGGER_VALUE_NETWORK = 2000;
+
+    /**
+     * APP进入触发偏移
+     */
+    public static final int OFFSET_TRIGGER_VALUE_APPENTER = 3000;
+
+    /**
+     * APP退出触发偏移
+     */
+    public static final int OFFSET_TRIGGER_VALUE_APPEXIT = 4000;
 
     /**
      * 全局控制编号
