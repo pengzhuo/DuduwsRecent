@@ -3,6 +3,7 @@ package com.duduws.ads.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,6 +40,7 @@ public class Facebook_Native_scroll_Activity extends BaseActivity implements Nat
     private int triggerType = -1;
     private boolean isOutSide = false;
     private int offset = 0;
+    private String site = "";
 
     private NativeAd nativeAd;
     private AdChoicesView adChoicesView;
@@ -63,10 +65,16 @@ public class Facebook_Native_scroll_Activity extends BaseActivity implements Nat
 
         offset = DspHelper.getTriggerOffSet(triggerType);
 
-        manager = new NativeAdsManager(this, ConfigDefine.SDK_KEY_FACEBOOK_NATIVE, ConstDefine.PRE_LOADING_ADS_NUM);
-        manager.setListener(this);
-        manager.loadAds(NativeAd.MediaCacheFlag.ALL);
-        inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        site = DspHelper.getDspSite(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+offset);
+
+        if (!TextUtils.isEmpty(site)){
+            manager = new NativeAdsManager(this, site, ConstDefine.PRE_LOADING_ADS_NUM);
+            manager.setListener(this);
+            manager.loadAds(NativeAd.MediaCacheFlag.ALL);
+            inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }else{
+            finish();
+        }
     }
 
     @Override

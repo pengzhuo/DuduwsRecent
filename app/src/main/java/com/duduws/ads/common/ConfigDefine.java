@@ -36,38 +36,43 @@ public class ConfigDefine {
     public static String APP_PROTOCOL = "";
 
     /**
-     * facebook site
-     */
-    public static String SDK_KEY_FACEBOOK = "";
-
-    /**
-     * 猎豹cm site
-     */
-    public static String SDK_KEY_CM = "";
-
-    /**
-     * admob site
-     */
-    public static String SDK_KEY_ADMOB = "";
-
-    /**
-     * facebook native site
-     */
-    public static String SDK_KEY_FACEBOOK_NATIVE = "";
-
-    /**
-     * 猎豹cm native site
-     */
-    public static String SDK_KEY_CM_NATIVE = "";
-
-    /**
-     * admob native site
-     */
-    public static String SDK_KEY_ADMOB_NATIVE = "";
-
-    /**
      * 友盟AppKey
      */
     public static String APP_KEY_UMENG = "";
 
+//    /**
+//     * facebook site
+//     */
+//    public static String SDK_KEY_FACEBOOK_UNLOCK = "";
+//    public static String SDK_KEY_FACEBOOK_NETWORK = "";
+//    public static String SDK_KEY_FACEBOOK_APP_ENTER = "";
+//    public static String SDK_KEY_FACEBOOK_APP_EXIT = "";
+//    public static String SDK_KEY_FACEBOOK_NATIVE_UNLOCK = "";
+//    public static String SDK_KEY_FACEBOOK_NATIVE_NETWORK = "";
+//    public static String SDK_KEY_FACEBOOK_NATIVE_APP_ENTER = "";
+//    public static String SDK_KEY_FACEBOOK_NATIVE_APP_EXIT = "";
+//
+//    /**
+//     * 猎豹cm site
+//     */
+//    public static String SDK_KEY_CM_UNLOCK = "";
+//    public static String SDK_KEY_CM_NETWORK = "";
+//    public static String SDK_KEY_CM_APP_ENTER = "";
+//    public static String SDK_KEY_CM_APP_EXIT = "";
+//    public static String SDK_KEY_CM_NATIVE_UNLOCK = "";
+//    public static String SDK_KEY_CM_NATIVE_NETWORK = "";
+//    public static String SDK_KEY_CM_NATIVE_APP_ENTER = "";
+//    public static String SDK_KEY_CM_NATIVE_APP_EXIT = "";
+//
+//    /**
+//     * admob site
+//     */
+//    public static String SDK_KEY_ADMOB_UNLOCK = "";
+//    public static String SDK_KEY_ADMOB_NETWORK = "";
+//    public static String SDK_KEY_ADMOB_APP_ENTER = "";
+//    public static String SDK_KEY_ADMOB_APP_EXIT = "";
+//    public static String SDK_KEY_ADMOB_NATIVE_UNLOCK = "";
+//    public static String SDK_KEY_ADMOB_NATIVE_NETWORK = "";
+//    public static String SDK_KEY_ADMOB_NATIVE_APP_ENTER = "";
+//    public static String SDK_KEY_ADMOB_NATIVE_APP_EXIT = "";
 }

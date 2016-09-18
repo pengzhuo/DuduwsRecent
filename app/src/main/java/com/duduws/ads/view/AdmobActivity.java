@@ -1,12 +1,11 @@
 package com.duduws.ads.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.duduws.ads.analytics.AnalyticsUtils;
-import com.duduws.ads.common.ConfigDefine;
 import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.log.MLog;
 import com.duduws.ads.utils.DspHelper;
@@ -23,6 +22,7 @@ public class AdmobActivity extends BaseActivity{
     private int triggerType = -1;
     private boolean isOutSide = false;
     private int offset = 0;
+    private String site = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,15 @@ public class AdmobActivity extends BaseActivity{
 
         offset = DspHelper.getTriggerOffSet(triggerType);
 
-        initInterstitialAd();
+        site = DspHelper.getDspSite(getApplicationContext(),ConstDefine.DSP_CHANNEL_ADMOB+offset);
+
+        if (!TextUtils.isEmpty(site)){
+            initInterstitialAd();
+        }else{
+            //重置广告展示标志
+            DspHelper.setCurrentAdsShowFlag(AdmobActivity.this, false);
+        }
+
         finish();
 
 //        Toast.makeText(this, ConfigDefine.SDK_KEY_ADMOB, Toast.LENGTH_LONG).show();
@@ -44,7 +52,7 @@ public class AdmobActivity extends BaseActivity{
 
     private void initInterstitialAd(){
         interstitialAd = new InterstitialAd(getApplicationContext());
-        interstitialAd.setAdUnitId(ConfigDefine.SDK_KEY_ADMOB);
+        interstitialAd.setAdUnitId(site);
         interstitialAd.setAdListener(listener);
         interstitialAd.loadAd(new AdRequest.Builder().build());
         if (!isOutSide){

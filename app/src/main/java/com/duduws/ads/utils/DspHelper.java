@@ -24,35 +24,6 @@ public class DspHelper {
     //DSP数组
     public static HashMap<Integer, ArrayList<Integer>> DSP_MAP = new HashMap<>();
 
-    static {
-        //解锁
-        DSP_MAP.put(ConstDefine.TRIGGER_TYPE_UNLOCK,
-                    new ArrayList<Integer>(){{
-                        add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
-                        add(ConstDefine.DSP_CHANNEL_ADMOB);
-                        add(ConstDefine.DSP_CHANNEL_CM);
-                    }});
-        //开网
-        DSP_MAP.put(ConstDefine.TRIGGER_TYPE_NETWORK,
-                    new ArrayList<Integer>(){{
-                        add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
-                        add(ConstDefine.DSP_CHANNEL_ADMOB);
-                        add(ConstDefine.DSP_CHANNEL_CM);
-                    }});
-        //APP进入
-        DSP_MAP.put(ConstDefine.TRIGGER_TYPE_APP_ENTER,
-                    new ArrayList<Integer>(){{
-                        add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
-                    }});
-        //APP退出
-        DSP_MAP.put(ConstDefine.TRIGGER_TYPE_APP_EXIT,
-                    new ArrayList<Integer>(){{
-                        add(ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE);
-                        add(ConstDefine.DSP_CHANNEL_ADMOB);
-                        add(ConstDefine.DSP_CHANNEL_CM);
-                    }});
-    }
-
     //延时广告标志
     private static final String DELAY_ADS_FLAG = StrUtils.deCrypt("delay_ads_flag");
     //当前是否有广告弹出
@@ -110,6 +81,8 @@ public class DspHelper {
     private static final String DSP_ADS_TYPE = StrUtils.deCrypt("dsp_ads_type");
     //是否发送用户信息的标志
     private static final String SEND_USER_INFO_FLAG = StrUtils.deCrypt("send_user_info_flag");
+    //版位SITE
+    private static final String DSP_SITE_INFO = StrUtils.deCrypt("dsp_site_info");
 
     /**
      * 获取偏移
@@ -833,6 +806,26 @@ public class DspHelper {
     }
 
     /**
+     * 设置渠道Site
+     * @param context
+     * @param channel
+     * @param site
+     */
+    public static void setDspSite(Context context, int channel, String site){
+        AdsPreferences.getInstance(context).setString(channel, DSP_SITE_INFO, site);
+    }
+
+    /**
+     * 获取渠道Site
+     * @param context
+     * @param channel
+     * @return
+     */
+    public static String getDspSite(Context context, int channel){
+        return AdsPreferences.getInstance(context).getString(channel, DSP_SITE_INFO, "");
+    }
+
+    /**
      * 获取解锁时插屏展示的渠道
      * @param context
      * @return
@@ -978,10 +971,10 @@ public class DspHelper {
             return channel;
         }
         //检测全局条件  App进入不受全局条件控制
-//        if (!checkDspSpotAppEnterChannel(context, ConstDefine.DSP_GLOABL)){
-//            MLog.i(TAG, "getDspSpotAppEnterChannel gloabl condition fail !");
-//            return channel;
-//        }
+        if (!checkDspSpotAppEnterChannel(context, ConstDefine.DSP_GLOABL)){
+            MLog.i(TAG, "getDspSpotAppEnterChannel gloabl condition fail !");
+            return channel;
+        }
         //检测单个SITE条件
         ArrayList<Integer> DSP_APP_LIST = DSP_MAP.get(ConstDefine.TRIGGER_TYPE_APP_ENTER);
         for (int i=0; i<DSP_APP_LIST.size(); i++){
@@ -1044,10 +1037,10 @@ public class DspHelper {
             return channel;
         }
         //检测全局条件  App退出不受全局条件控制
-//        if (!checkDspSpotAppExitChannel(context, ConstDefine.DSP_GLOABL)){
-//            MLog.i(TAG, "getDspSpotAppExitChannel gloabl condition fail !");
-//            return channel;
-//        }
+        if (!checkDspSpotAppExitChannel(context, ConstDefine.DSP_GLOABL)){
+            MLog.i(TAG, "getDspSpotAppExitChannel gloabl condition fail !");
+            return channel;
+        }
         //检测单个SITE条件
         ArrayList<Integer> DSP_APP_LIST = DSP_MAP.get(ConstDefine.TRIGGER_TYPE_APP_EXIT);
         for (int i=0; i<DSP_APP_LIST.size(); i++){

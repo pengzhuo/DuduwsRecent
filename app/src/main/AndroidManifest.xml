@@ -55,17 +55,14 @@
             android:name="APP_PROTOCOL"
             android:value="${APP_PROTOCOL}"/>
         <meta-data
-            android:name="SDK_KEY_FACEBOOK"
-            android:value="${SDK_KEY_FACEBOOK}"/>
+            android:name="SITE_FACEBOOK"
+            android:value="${SITE_FACEBOOK}"/>
         <meta-data
-            android:name="SDK_KEY_FB_NATIVE"
-            android:value="${SDK_KEY_FB_NATIVE}"/>
+            android:name="SITE_CM"
+            android:value="${SITE_CM}"/>
         <meta-data
-            android:name="SDK_KEY_CM"
-            android:value="${SDK_KEY_CM}"/>
-        <meta-data
-            android:name="SDK_KEY_ADMOB"
-            android:value="${SDK_KEY_ADMOB}"/>
+            android:name="SITE_ADMOB"
+            android:value="${SITE_ADMOB}"/>
         <meta-data
             android:name="SITE_INTERVAL"
             android:value="${SITE_INTERVAL}"/>

@@ -2,6 +2,7 @@ package com.duduws.ads.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.cmcm.adsdk.interstitial.InterstitialAdCallBack;
@@ -21,6 +22,7 @@ public class CmActivity extends BaseActivity{
     private int triggerType = -1;
     private boolean isOutSide = false;
     private int offset = 0;
+    private String site = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +36,21 @@ public class CmActivity extends BaseActivity{
 
         offset = DspHelper.getTriggerOffSet(triggerType);
 
-        initInterstitialAds();
+        site = DspHelper.getDspSite(this, ConstDefine.DSP_CHANNEL_CM+offset);
+
+        if (!TextUtils.isEmpty(site)){
+            initInterstitialAds();
+        }else{
+            //重置广告展示标志
+            DspHelper.setCurrentAdsShowFlag(CmActivity.this, false);
+        }
 
         finish();
 //        Toast.makeText(this, ConfigDefine.SDK_KEY_CM, Toast.LENGTH_LONG).show();
     }
 
     private void initInterstitialAds(){
-        interstitialAdManager = new InterstitialAdManager(this, ConfigDefine.SDK_KEY_CM);
+        interstitialAdManager = new InterstitialAdManager(this, site);
         interstitialAdManager.setInterstitialCallBack(callBack);
         interstitialAdManager.loadAd();
         if (!isOutSide){

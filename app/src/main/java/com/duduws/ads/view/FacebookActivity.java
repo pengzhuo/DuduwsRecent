@@ -3,6 +3,7 @@ package com.duduws.ads.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.duduws.ads.analytics.AnalyticsUtils;
@@ -27,6 +28,7 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
     private int triggerType = -1;
     private boolean isOutSide = false;
     private int offset = 0;
+    private String site = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +42,16 @@ public class FacebookActivity extends BaseActivity implements InterstitialAdList
 
         offset = DspHelper.getTriggerOffSet(triggerType);
 
-        //初始化Facebook
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        loadInterstitialAd(getApplicationContext(), ConfigDefine.SDK_KEY_FACEBOOK);
+        site = DspHelper.getDspSite(this, ConstDefine.DSP_CHANNEL_FACEBOOK);
+
+        if (!TextUtils.isEmpty(site)){
+            //初始化Facebook
+            FacebookSdk.sdkInitialize(getApplicationContext());
+            loadInterstitialAd(getApplicationContext(), site);
+        }else{
+            //重置广告展示标志
+            DspHelper.setCurrentAdsShowFlag(this, false);
+        }
 
         finish();
 //        Toast.makeText(this, ConfigDefine.SDK_KEY_FACEBOOK, Toast.LENGTH_LONG).show();

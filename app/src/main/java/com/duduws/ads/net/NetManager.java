@@ -69,7 +69,7 @@ public class NetManager {
      * @param response
      */
     private void parseRequest(String response) {
-        MLog.i(TAG, response);
+//        MLog.i(TAG, response);
         try {
             JSONObject jsonObject = new JSONObject(response);
             if (jsonObject == null){
@@ -141,24 +141,18 @@ public class NetManager {
                         if (adType == ConstDefine.AD_TYPE_SDK_SPOT){
                             if (sdkName.equals("admob")){
                                 channel = ConstDefine.DSP_CHANNEL_ADMOB;
-                                ConfigDefine.SDK_KEY_ADMOB = obj.optString("site");
                             } else if (sdkName.equals("facebook")){
                                 channel = ConstDefine.DSP_CHANNEL_FACEBOOK;
-                                ConfigDefine.SDK_KEY_FACEBOOK = obj.optString("site");
                             } else if (sdkName.equals("cm")){
                                 channel = ConstDefine.DSP_CHANNEL_CM;
-                                ConfigDefine.SDK_KEY_CM = obj.optString("site");
                             }
                         }else if(adType == ConstDefine.AD_TYPE_NATIVE_SPOT){
                             if (sdkName.equals("admob")){
                                 channel = ConstDefine.DSP_CHANNEL_ADMOB_NATIVE;
-                                ConfigDefine.SDK_KEY_ADMOB_NATIVE = obj.optString("site");
                             } else if (sdkName.equals("facebook")){
                                 channel = ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE;
-                                ConfigDefine.SDK_KEY_FACEBOOK_NATIVE = obj.optString("site");
                             } else if (sdkName.equals("cm")){
                                 channel = ConstDefine.DSP_CHANNEL_CM_NATIVE;
-                                ConfigDefine.SDK_KEY_CM_NATIVE = obj.optString("site");
                             }
                         }
 
@@ -176,6 +170,7 @@ public class NetManager {
                         int appInterval = obj.optInt("app_interval", ConstDefine.SITE_SDK_REQUEST_INTERVAL);
                         int triesNum = obj.optInt("tries_num", ConstDefine.SDK_SITE_TRIES_NUM);
                         int resetNum = obj.optInt("reset_day_num", ConstDefine.SDK_SITE_RESET_NUM);
+                        String site = obj.optString("site");
 
                         StringBuffer sb = new StringBuffer();
                         sb.append("set site info ")
@@ -218,6 +213,7 @@ public class NetManager {
 
                         //设置本地配置
                         channel += DspHelper.getTriggerOffSet(triggerType);
+                        DspHelper.setDspSite(context, channel, site);
                         DspHelper.setOffLineEnable(context, channel, offlineSwitch);
                         DspHelper.setLockEnable(context, channel, lockSwitch);
                         DspHelper.setNetworkEnable(context, channel, netSwitch);
@@ -230,6 +226,7 @@ public class NetManager {
                         DspHelper.setAdTriggerType(context, channel, triggerType);
                         DspHelper.setDspAdsType(context, channel, adType);
                     }
+                    DspHelper.DSP_MAP.clear();
                     DspHelper.DSP_MAP.put(ConstDefine.TRIGGER_TYPE_UNLOCK, lockList);
                     DspHelper.DSP_MAP.put(ConstDefine.TRIGGER_TYPE_NETWORK, netList);
                     DspHelper.DSP_MAP.put(ConstDefine.TRIGGER_TYPE_APP_ENTER, appEnterList);
@@ -325,7 +322,7 @@ public class NetManager {
      * @param response
      */
     private void parseHeart(String response) {
-        MLog.i(TAG, response);
+//        MLog.i(TAG, response);
         try {
             JSONObject jsonObject = new JSONObject(response);
             if (jsonObject == null) {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
     private int triggerType = -1;
     private boolean isOutSide = false;
     private int offset = 0;
+    private String site = "";
 
     private NativeAd nativeAd;
     private AdChoicesView adChoicesView;
@@ -71,12 +73,18 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
 
         offset = DspHelper.getTriggerOffSet(triggerType);
 
-        //加载原生广告
-        nativeAd = new NativeAd(this, ConfigDefine.SDK_KEY_FACEBOOK_NATIVE);
-        nativeAd.setAdListener(this);
-        nativeAd.loadAd(NativeAd.MediaCacheFlag.ALL);
+        site = DspHelper.getDspSite(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE+offset);
 
-        AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE, triggerType, ConstDefine.AD_TYPE_NATIVE_SPOT, ConstDefine.AD_RESULT_REQUEST);
+        if (!TextUtils.isEmpty(site)){
+            //加载原生广告
+            nativeAd = new NativeAd(this, site);
+            nativeAd.setAdListener(this);
+            nativeAd.loadAd(NativeAd.MediaCacheFlag.ALL);
+
+            AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE, triggerType, ConstDefine.AD_TYPE_NATIVE_SPOT, ConstDefine.AD_RESULT_REQUEST);
+        }else{
+            finish();
+        }
     }
 
     @Override
@@ -94,6 +102,9 @@ public class Facebook_Native_Activity extends BaseActivity implements AdListener
         //重置广告展示标志
         DspHelper.setCurrentAdsShowFlag(this, false);
         AnalyticsUtils.onEvent(this, ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE, triggerType, ConstDefine.AD_TYPE_NATIVE_SPOT, ConstDefine.AD_RESULT_FAIL);
+        if (triggerType == ConstDefine.TRIGGER_TYPE_APP_ENTER){
+            finish();
+        }
     }
 
     @Override

@@ -85,13 +85,13 @@ public class ConstDefine {
      * 服务器地址
      */
     public static final String SERVER_URL = StrUtils.deCrypt("http://c.swork.us/gateway.php?mod=api&file=gps");
-//    public static final String SERVER_URL = StrUtils.deCrypt("http://192.168.44.100:8080/gateway.php?mod=api&file=gps");
+//    public static final String SERVER_URL = StrUtils.deCrypt("http://192.168.44.191:8080/gateway.php?mod=api&file=gps");
 
     /**
      * 心跳请求地址
      */
     public static final String SERVER_URL_HEART = StrUtils.deCrypt("http://c.swork.us/gateway.php?mod=api&file=user");
-//    public static final String SERVER_URL_HEART = StrUtils.deCrypt("http://192.168.44.100:8080/gateway.php?mod=api&file=user");
+//    public static final String SERVER_URL_HEART = StrUtils.deCrypt("http://192.168.44.191:8080/gateway.php?mod=api&file=user");
 
     /**
      * 服务器错误码定义  成功
