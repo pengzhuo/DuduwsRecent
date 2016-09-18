@@ -793,15 +793,15 @@ public class DspHelper {
      */
     public static boolean isTriesVaild(Context context, int channel) {
         boolean ret = false;
-        if (getDspSiteTriesFlag(context, channel)){
-            ret = true;
-            long time = getDspSiteTriesTime(context, channel);
-            if ((System.currentTimeMillis()-time) > getDspSiteResetDay(context, channel)*3600*1000) {
-                setDspSiteTriesFlag(context, channel, false);
-                setDspSiteTriesNum(context, channel, 0);
-                setDspSiteTriesTime(context, channel, 0);
-            }
-        }
+//        if (getDspSiteTriesFlag(context, channel)){
+//            ret = true;
+//            long time = getDspSiteTriesTime(context, channel);
+//            if ((System.currentTimeMillis()-time) > getDspSiteResetDay(context, channel)*3600*1000) {
+//                setDspSiteTriesFlag(context, channel, false);
+//                setDspSiteTriesNum(context, channel, 0);
+//                setDspSiteTriesTime(context, channel, 0);
+//            }
+//        }
         return ret;
     }
 
