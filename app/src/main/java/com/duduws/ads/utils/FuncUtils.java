@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 工具函数类
@@ -431,6 +432,15 @@ public class FuncUtils {
             info.getMacAddress().replace(":", "");
         } catch (Exception e) {
             mac = "";
+        }
+
+        if (TextUtils.isEmpty(mac)){
+            String uuid = AdsPreferences.getInstance(context).getString("DWS_UUID", "-1");
+            if (uuid.equalsIgnoreCase("-1")){
+                uuid = "DWS_" + UUID.randomUUID().toString();
+                AdsPreferences.getInstance(context).setString("DWS_UUID", uuid);
+            }
+            mac = uuid;
         }
 
         return mac;
