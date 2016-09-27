@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ad_unit"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:id="@+id/clickLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:id="@+id/name_linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_alignParentTop="true"
+            >
+
+            <ImageView
+                android:id="@+id/native_ad_icon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:contentDescription="Ad icon"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:layout_below="@+id/native_ad_icon"
+                >
+
+                <TextView
+                    android:id="@+id/native_ad_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:id="@+id/native_ad_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="2"
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    android:gravity="center"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ad_choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_linearlayout"
+            android:layout_below="@+id/name_linearlayout"
+            >
+            <com.facebook.ads.MediaView
+                android:id="@+id/native_ad_media"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Ad image"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_alignParentBottom="true"
+            >
+            <Button
+                android:id="@+id/native_ad_call_to_action"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#00ced1"
+                android:textColor="#666666"
+                android:textSize="20sp"
+                android:visibility="gone"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/ad_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_delete"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:clickable="true" />
+</RelativeLayout>

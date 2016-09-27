@@ -1,0 +1,125 @@
+apply plugin: 'com.android.library'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+def getTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getDefault());
+}
+
+android {
+    signingConfigs {
+    }
+    compileSdkVersion 24
+    buildToolsVersion "23.0.2"
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+
+    productFlavors {
+        cs04 {
+            manifestPlaceholders = [
+                    APP_VERSION       : properties.getProperty("version_cs04"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_cs04"),
+                    APP_COOPERATION_ID: properties.getProperty("work_cs04"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_cs04"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_cs04"),
+                    SITE_FACEBOOK     : properties.getProperty("fb_site_cs04"),
+                    SITE_CM           : properties.getProperty("cm_site_cs04"),
+                    SITE_ADMOB        : properties.getProperty("admob_site_cs04"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_cs04"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cs04"),
+                    NETWORK_TIME      : properties.getProperty("network_time_cs04"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cs04"),
+            ]
+        }
+        cn201 {
+            manifestPlaceholders = [
+                    APP_VERSION       : properties.getProperty("version_cn201"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_cn201"),
+                    APP_COOPERATION_ID: properties.getProperty("work_cn201"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_cn201"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_cn201"),
+                    SITE_FACEBOOK     : properties.getProperty("fb_site_cn201"),
+                    SITE_CM           : properties.getProperty("cm_site_cn201"),
+                    SITE_ADMOB        : properties.getProperty("admob_site_cn201"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_cn201"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cn201"),
+                    NETWORK_TIME      : properties.getProperty("network_time_cn201"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cn201"),
+            ]
+        }
+        cn202 {
+            manifestPlaceholders = [
+                    APP_VERSION       : properties.getProperty("version_cn202"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_cn202"),
+                    APP_COOPERATION_ID: properties.getProperty("work_cn202"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_cn202"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_cn202"),
+                    SITE_FACEBOOK     : properties.getProperty("fb_site_cn202"),
+                    SITE_CM           : properties.getProperty("cm_site_cn202"),
+                    SITE_ADMOB        : properties.getProperty("admob_site_cn202"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_cn202"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cn202"),
+                    NETWORK_TIME      : properties.getProperty("network_time_cn202"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cn202"),
+            ]
+        }
+        cn301 {
+            manifestPlaceholders = [
+                    APP_VERSION       : properties.getProperty("version_cn301"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_cn301"),
+                    APP_COOPERATION_ID: properties.getProperty("work_cn301"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_cn301"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_cn301"),
+                    SITE_FACEBOOK     : properties.getProperty("fb_site_cn301"),
+                    SITE_CM           : properties.getProperty("cm_site_cn301"),
+                    SITE_ADMOB        : properties.getProperty("admob_site_cn301"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_cn301"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cn301"),
+                    NETWORK_TIME      : properties.getProperty("network_time_cn301"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cn301"),
+            ]
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    useLibrary 'org.apache.http.legacy'
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile(name: 'AudienceNetwork', ext: 'aar')
+    compile(name: 'cmadsdk_world_base_V3.4.7', ext: 'aar')
+    compile(name: 'android-processes-1.0.8', ext: 'aar')
+    compile files('libs/volley.jar')
+    compile 'com.facebook.android:facebook-android-sdk:4.+'
+    compile 'com.google.android.gms:play-services-ads:9.4.0'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.umeng.analytics:analytics:latest.integration'
+}
