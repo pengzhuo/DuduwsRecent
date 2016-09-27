@@ -169,6 +169,21 @@ public class ConstDefine {
     public static final int DSP_CHANNEL_CM_NATIVE = 13;
 
     /**
+     * Facebook video 渠道编号
+     */
+    public static final int DSP_CHANNEL_FACEBOOK_VIDEO = 21;
+
+    /**
+     * Admob video 渠道编号
+     */
+    public static final int DSP_CHANNEL_ADMOB_VIDEO = 22;
+
+    /**
+     * 猎豹CM video 渠道编号
+     */
+    public static final int DSP_CHANNEL_CM_VIDEO = 23;
+
+    /**
      * 插屏广告类型
      */
     public static final int AD_TYPE_SDK_SPOT = 1;

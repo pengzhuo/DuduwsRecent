@@ -91,6 +91,10 @@
         <!--</activity>-->
 
         <activity
+            android:name="com.duduws.ads.view.AdmobRewardedVideoAdActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity
             android:name="com.duduws.ads.view.LoadingActivity"
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>

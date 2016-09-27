@@ -118,6 +118,8 @@ public class AdApplication extends Application {
     private void initSiteInfo(int type, String json){
         try {
             int diff = ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE - ConstDefine.DSP_CHANNEL_FACEBOOK;
+            int diff_ex = ConstDefine.DSP_CHANNEL_FACEBOOK_VIDEO - ConstDefine.DSP_CHANNEL_FACEBOOK;
+
             JSONObject jsonObject = new JSONObject(json);
             if (!jsonObject.isNull("sdk")){
                 JSONObject sdk = jsonObject.optJSONObject("sdk");
@@ -126,6 +128,10 @@ public class AdApplication extends Application {
             if (!jsonObject.isNull("native")){
                 JSONObject nativeObj = jsonObject.optJSONObject("native");
                 initSubSite(type+diff, nativeObj);
+            }
+            if (!jsonObject.isNull("video")){
+                JSONObject videoObj = jsonObject.optJSONObject("video");
+                initSubSite(type+diff_ex, videoObj);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -140,7 +146,9 @@ public class AdApplication extends Application {
             }
             int offset = channel + DspHelper.getTriggerOffSet(ConstDefine.TRIGGER_TYPE_UNLOCK);
             DspHelper.setDspSite(this, offset, jsonObject.optString("unlock"));
-            if (channel == ConstDefine.DSP_CHANNEL_CM || channel == ConstDefine.DSP_CHANNEL_CM_NATIVE){
+            if (channel == ConstDefine.DSP_CHANNEL_CM ||
+                    channel == ConstDefine.DSP_CHANNEL_CM_NATIVE ||
+                    channel == ConstDefine.DSP_CHANNEL_CM_VIDEO){
                 String cmId = jsonObject.optString("unlock");
                 if (!TextUtils.isEmpty(cmId)){
                     CM_APP_ID = cmId.substring(0, 4);
