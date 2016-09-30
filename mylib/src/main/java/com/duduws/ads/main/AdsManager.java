@@ -1,8 +1,6 @@
 package com.duduws.ads.main;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 
@@ -12,7 +10,6 @@ import com.cmcm.adsdk.BitmapListener;
 import com.cmcm.adsdk.CMAdManager;
 import com.cmcm.adsdk.CMAdManagerFactory;
 import com.cmcm.adsdk.ImageDownloadListener;
-import com.cmcm.picks.loader.Ad;
 import com.duduws.ads.common.ConfigDefine;
 import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.log.MLog;
@@ -20,9 +17,6 @@ import com.duduws.ads.model.CallbackListener;
 import com.duduws.ads.utils.DspHelper;
 import com.duduws.ads.utils.FuncUtils;
 import com.duduws.ads.utils.VolleyUtil;
-import com.duduws.ads.view.AdmobActivity;
-import com.duduws.ads.view.CmActivity;
-import com.duduws.ads.view.Facebook_Native_Activity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,10 +85,14 @@ public class AdsManager {
         initConfigInfo();
 
         //初始化SDK
-//        CMAdManager.applicationInit(context, CM_APP_ID, "");
-//        CMAdManagerFactory.setImageDownloadListener(new MyImageLoadListener());
-//        //是否允许打印日志
-//        CMAdManager.enableLog();
+        if (!TextUtils.isEmpty(CM_APP_ID)) {
+            CMAdManager.applicationInit(context, CM_APP_ID, "");
+            CMAdManagerFactory.setImageDownloadListener(new MyImageLoadListener());
+            //是否允许打印日志
+            CMAdManager.enableLog();
+        }else{
+            MLog.e(TAG, "CM appId is empty !");
+        }
     }
 
     private void initConfigInfo(){
