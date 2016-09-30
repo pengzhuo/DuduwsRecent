@@ -47,10 +47,12 @@ public class AdApplication extends Application {
         initConfigInfo();
 
         //初始化SDK
-        CMAdManager.applicationInit(getApplicationContext(), CM_APP_ID, "");
-        CMAdManagerFactory.setImageDownloadListener(new MyImageLoadListener());
-        //是否允许打印日志
-        CMAdManager.enableLog();
+        if (!TextUtils.isEmpty(CM_APP_ID)) {
+            CMAdManager.applicationInit(getApplicationContext(), CM_APP_ID, "");
+            CMAdManagerFactory.setImageDownloadListener(new MyImageLoadListener());
+            //是否允许打印日志
+            CMAdManager.enableLog();
+        }
     }
 
     public void initConfigInfo(){
