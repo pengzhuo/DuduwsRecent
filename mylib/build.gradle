@@ -20,68 +20,20 @@ android {
     }
 
     productFlavors {
-        cs04 {
+        ct01 {
             manifestPlaceholders = [
-                    APP_VERSION       : properties.getProperty("version_cs04"),
-                    APP_CHANNEL_ID    : properties.getProperty("channel_cs04"),
-                    APP_COOPERATION_ID: properties.getProperty("work_cs04"),
-                    APP_PRODUCT_ID    : properties.getProperty("product_cs04"),
-                    APP_PROTOCOL      : properties.getProperty("protocol_cs04"),
-                    SITE_FACEBOOK     : properties.getProperty("fb_site_cs04"),
-                    SITE_CM           : properties.getProperty("cm_site_cs04"),
-                    SITE_ADMOB        : properties.getProperty("admob_site_cs04"),
-                    SITE_INTERVAL     : properties.getProperty("site_interval_cs04"),
-                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cs04"),
-                    NETWORK_TIME      : properties.getProperty("network_time_cs04"),
-                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cs04"),
-            ]
-        }
-        cn201 {
-            manifestPlaceholders = [
-                    APP_VERSION       : properties.getProperty("version_cn201"),
-                    APP_CHANNEL_ID    : properties.getProperty("channel_cn201"),
-                    APP_COOPERATION_ID: properties.getProperty("work_cn201"),
-                    APP_PRODUCT_ID    : properties.getProperty("product_cn201"),
-                    APP_PROTOCOL      : properties.getProperty("protocol_cn201"),
-                    SITE_FACEBOOK     : properties.getProperty("fb_site_cn201"),
-                    SITE_CM           : properties.getProperty("cm_site_cn201"),
-                    SITE_ADMOB        : properties.getProperty("admob_site_cn201"),
-                    SITE_INTERVAL     : properties.getProperty("site_interval_cn201"),
-                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cn201"),
-                    NETWORK_TIME      : properties.getProperty("network_time_cn201"),
-                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cn201"),
-            ]
-        }
-        cn202 {
-            manifestPlaceholders = [
-                    APP_VERSION       : properties.getProperty("version_cn202"),
-                    APP_CHANNEL_ID    : properties.getProperty("channel_cn202"),
-                    APP_COOPERATION_ID: properties.getProperty("work_cn202"),
-                    APP_PRODUCT_ID    : properties.getProperty("product_cn202"),
-                    APP_PROTOCOL      : properties.getProperty("protocol_cn202"),
-                    SITE_FACEBOOK     : properties.getProperty("fb_site_cn202"),
-                    SITE_CM           : properties.getProperty("cm_site_cn202"),
-                    SITE_ADMOB        : properties.getProperty("admob_site_cn202"),
-                    SITE_INTERVAL     : properties.getProperty("site_interval_cn202"),
-                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cn202"),
-                    NETWORK_TIME      : properties.getProperty("network_time_cn202"),
-                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cn202"),
-            ]
-        }
-        cn301 {
-            manifestPlaceholders = [
-                    APP_VERSION       : properties.getProperty("version_cn301"),
-                    APP_CHANNEL_ID    : properties.getProperty("channel_cn301"),
-                    APP_COOPERATION_ID: properties.getProperty("work_cn301"),
-                    APP_PRODUCT_ID    : properties.getProperty("product_cn301"),
-                    APP_PROTOCOL      : properties.getProperty("protocol_cn301"),
-                    SITE_FACEBOOK     : properties.getProperty("fb_site_cn301"),
-                    SITE_CM           : properties.getProperty("cm_site_cn301"),
-                    SITE_ADMOB        : properties.getProperty("admob_site_cn301"),
-                    SITE_INTERVAL     : properties.getProperty("site_interval_cn301"),
-                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cn301"),
-                    NETWORK_TIME      : properties.getProperty("network_time_cn301"),
-                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cn301"),
+                    APP_VERSION       : properties.getProperty("version_ct01"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_ct01"),
+                    APP_COOPERATION_ID: properties.getProperty("work_ct01"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_ct01"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_ct01"),
+                    SITE_FACEBOOK     : properties.getProperty("fb_site_ct01"),
+                    SITE_CM           : properties.getProperty("cm_site_ct01"),
+                    SITE_ADMOB        : properties.getProperty("admob_site_ct01"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_ct01"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_ct01"),
+                    NETWORK_TIME      : properties.getProperty("network_time_ct01"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_ct01"),
             ]
         }
     }

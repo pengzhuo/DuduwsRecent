@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -63,22 +64,23 @@ public class AdsManager {
      */
     public void show(int id, int type, CallbackListener listener){
         this.listener = listener;
-        Intent intent = new Intent();
-        switch (id){
-            case 1:
-                intent.setClass(context, Facebook_Native_Activity.class);
-                break;
-            case 2:
-                intent.setClass(context, AdmobActivity.class);
-                break;
-            case 3:
-                intent.setClass(context, CmActivity.class);
-                break;
+        long time = DspHelper.getDspSpotLastTime(context);
+        if (!DateUtils.isToday(time)){
+            //重置数据
+            DspHelper.resetData(context);
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(DspHelper.AD_TRIGGER_TYPE, 1);
-        intent.putExtra(DspHelper.AD_EXTRA_SITE, false);
-        context.startActivity(intent);
+
+        int channel = DspHelper.getDspSpotLockChannel(context);
+        if (channel != ConstDefine.DSP_GLOABL) {
+            if (FuncUtils.hasActiveNetwork(context)) {
+                //展示广告
+                DspHelper.showAds(context, channel, ConstDefine.TRIGGER_TYPE_UNLOCK);
+            }else{
+                listener.onCallback(-2, null);
+            }
+        }else{
+            listener.onCallback(-1, null);
+        }
     }
 
     public void init() {
@@ -89,10 +91,10 @@ public class AdsManager {
         initConfigInfo();
 
         //初始化SDK
-        CMAdManager.applicationInit(context, CM_APP_ID, "");
-        CMAdManagerFactory.setImageDownloadListener(new MyImageLoadListener());
-        //是否允许打印日志
-        CMAdManager.enableLog();
+//        CMAdManager.applicationInit(context, CM_APP_ID, "");
+//        CMAdManagerFactory.setImageDownloadListener(new MyImageLoadListener());
+//        //是否允许打印日志
+//        CMAdManager.enableLog();
     }
 
     private void initConfigInfo(){

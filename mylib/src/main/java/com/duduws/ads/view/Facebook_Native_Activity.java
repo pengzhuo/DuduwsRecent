@@ -221,6 +221,9 @@ public class Facebook_Native_Activity extends Activity implements AdListener{
         DspHelper.setCurrentAdsShowFlag(this, false);
         delayShowCmAds();
         delete = null;
+        if (AdsManager.getInstance(this).listener != null){
+            AdsManager.getInstance(this).listener.onCallback(2, null);
+        }
         super.onDestroy();
     }
 
