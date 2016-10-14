@@ -4,19 +4,12 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.cmcm.adsdk.BitmapListener;
-import com.cmcm.adsdk.CMAdManager;
-import com.cmcm.adsdk.CMAdManagerFactory;
-import com.cmcm.adsdk.ImageDownloadListener;
 import com.duduws.ads.common.ConfigDefine;
 import com.duduws.ads.common.ConstDefine;
 import com.duduws.ads.log.MLog;
 import com.duduws.ads.model.CallbackListener;
 import com.duduws.ads.utils.DspHelper;
 import com.duduws.ads.utils.FuncUtils;
-import com.duduws.ads.utils.VolleyUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,16 +76,6 @@ public class AdsManager {
 
         //初始化信息
         initConfigInfo();
-
-        //初始化SDK
-        if (!TextUtils.isEmpty(CM_APP_ID)) {
-            CMAdManager.applicationInit(context, CM_APP_ID, "");
-            CMAdManagerFactory.setImageDownloadListener(new MyImageLoadListener());
-            //是否允许打印日志
-            CMAdManager.enableLog();
-        }else{
-            MLog.e(TAG, "CM appId is empty !");
-        }
     }
 
     private void initConfigInfo(){
@@ -212,40 +195,6 @@ public class AdsManager {
             }
             int offset = channel + DspHelper.getTriggerOffSet(ConstDefine.TRIGGER_TYPE_APP_EXIT);
             DspHelper.setDspSite(context, offset, jsonObject.optString("exit"));
-        }
-    }
-
-    /**
-     * Image loader must setted  if you integrate interstitial Ads in your App.
-     */
-    class MyImageLoadListener implements ImageDownloadListener {
-
-        @Override
-        public void getBitmap(String url, final BitmapListener imageListener) {
-            if(TextUtils.isEmpty(url)){
-                if(imageListener != null) {
-                    imageListener.onFailed("url is null");
-                }
-                return;
-            }
-            //You can use your own VolleyUtil for image loader
-            VolleyUtil.loadImage(url, new ImageLoader.ImageListener() {
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    if (imageListener != null) {
-                        imageListener.onFailed(volleyError.getMessage());
-                    }
-                }
-
-                @Override
-                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                    if (imageContainer != null && imageContainer.getBitmap() != null) {
-                        if (imageListener != null) {
-                            imageListener.onSuccessed(imageContainer.getBitmap());
-                        }
-                    }
-                }
-            });
         }
     }
 }

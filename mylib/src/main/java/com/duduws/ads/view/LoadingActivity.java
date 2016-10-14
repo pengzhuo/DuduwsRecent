@@ -89,7 +89,7 @@ public class LoadingActivity extends Activity{
                         } else if (channel == ConstDefine.DSP_CHANNEL_FACEBOOK){
                             intent.setClass(LoadingActivity.this, Facebook_Native_Activity.class);
                         } else if (channel == ConstDefine.DSP_CHANNEL_CM){
-                            intent.setClass(LoadingActivity.this, CmActivity.class);
+//                            intent.setClass(LoadingActivity.this, CmActivity.class);
                         } else if (channel == ConstDefine.DSP_CHANNEL_ADMOB_NATIVE) {
                             return;
                         } else if (channel == ConstDefine.DSP_CHANNEL_FACEBOOK_NATIVE) {

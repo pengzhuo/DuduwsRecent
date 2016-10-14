@@ -130,9 +130,7 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile(name: 'AudienceNetwork', ext: 'aar')
-    compile(name: 'cmadsdk_world_base_V3.4.7', ext: 'aar')
     compile(name: 'android-processes-1.0.8', ext: 'aar')
-    compile files('libs/volley.jar')
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.google.android.gms:play-services-ads:9.4.0'
     compile 'com.android.support:recyclerview-v7:24.2.1'
