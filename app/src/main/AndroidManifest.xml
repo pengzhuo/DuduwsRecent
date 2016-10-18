@@ -111,10 +111,6 @@
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
-            android:name="com.duduws.ads.view.CmActivity"
-            android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity
             android:name="com.duduws.ads.view.AdmobActivity"
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
