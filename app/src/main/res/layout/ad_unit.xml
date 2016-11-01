@@ -33,6 +33,16 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 />
+            <RelativeLayout
+                android:id="@+id/mask_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <RelativeLayout
+                android:id="@+id/click_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                />
         </RelativeLayout>
 
         <LinearLayout

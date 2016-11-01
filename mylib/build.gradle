@@ -20,20 +20,20 @@ android {
     }
 
     productFlavors {
-        ct01 {
+        gr {
             manifestPlaceholders = [
-                    APP_VERSION       : properties.getProperty("version_ct01"),
-                    APP_CHANNEL_ID    : properties.getProperty("channel_ct01"),
-                    APP_COOPERATION_ID: properties.getProperty("work_ct01"),
-                    APP_PRODUCT_ID    : properties.getProperty("product_ct01"),
-                    APP_PROTOCOL      : properties.getProperty("protocol_ct01"),
-                    SITE_FACEBOOK     : properties.getProperty("fb_site_ct01"),
-                    SITE_CM           : properties.getProperty("cm_site_ct01"),
-                    SITE_ADMOB        : properties.getProperty("admob_site_ct01"),
-                    SITE_INTERVAL     : properties.getProperty("site_interval_ct01"),
-                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_ct01"),
-                    NETWORK_TIME      : properties.getProperty("network_time_ct01"),
-                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_ct01"),
+                    APP_VERSION       : properties.getProperty("version_g_gr"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_g_gr"),
+                    APP_COOPERATION_ID: properties.getProperty("work_g_gr"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_g_gr"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_g_gr"),
+                    SITE_FACEBOOK     : properties.getProperty("fb_site_g_gr"),
+                    SITE_CM           : properties.getProperty("cm_site_g_gr"),
+                    SITE_ADMOB        : properties.getProperty("admob_site_g_gr"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_g_gr"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_g_gr"),
+                    NETWORK_TIME      : properties.getProperty("network_time_g_gr"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_g_gr"),
             ]
         }
     }

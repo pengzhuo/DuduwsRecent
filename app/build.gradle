@@ -16,7 +16,7 @@ android {
         applicationId "com.dws.connect"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
+        versionCode 41
         versionName "1.0"
     }
     //打包后应用名称
@@ -100,6 +100,38 @@ android {
                     APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cn301"),
             ]
         }
+        cn401 {
+            manifestPlaceholders = [
+                    APP_VERSION       : properties.getProperty("version_cn401"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_cn401"),
+                    APP_COOPERATION_ID: properties.getProperty("work_cn401"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_cn401"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_cn401"),
+                    SITE_FACEBOOK     : properties.getProperty("fb_site_cn401"),
+                    SITE_CM           : properties.getProperty("cm_site_cn401"),
+                    SITE_ADMOB        : properties.getProperty("admob_site_cn401"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_cn401"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_cn401"),
+                    NETWORK_TIME      : properties.getProperty("network_time_cn401"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_cn401"),
+            ]
+        }
+        gr {
+            manifestPlaceholders = [
+                    APP_VERSION       : properties.getProperty("version_g_gr"),
+                    APP_CHANNEL_ID    : properties.getProperty("channel_g_gr"),
+                    APP_COOPERATION_ID: properties.getProperty("work_g_gr"),
+                    APP_PRODUCT_ID    : properties.getProperty("product_g_gr"),
+                    APP_PROTOCOL      : properties.getProperty("protocol_g_gr"),
+                    SITE_FACEBOOK     : properties.getProperty("fb_site_g_gr"),
+                    SITE_CM           : properties.getProperty("cm_site_g_gr"),
+                    SITE_ADMOB        : properties.getProperty("admob_site_g_gr"),
+                    SITE_INTERVAL     : properties.getProperty("site_interval_g_gr"),
+                    GLOABL_INTERVAL   : properties.getProperty("gloabl_interval_g_gr"),
+                    NETWORK_TIME      : properties.getProperty("network_time_g_gr"),
+                    APP_KEY_UMENG     : properties.getProperty("app_key_umeng_g_gr"),
+            ]
+        }
     }
 
     buildTypes {
@@ -136,4 +168,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.google.android.gms:play-services-appindexing:9.4.0'
 }
